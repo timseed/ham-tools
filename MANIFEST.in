@@ -1,0 +1,3 @@
+include ham/test/asian*
+include ham/test/*.py
+include ham/dxcc/cty.dat
