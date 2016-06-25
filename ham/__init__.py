@@ -4,3 +4,6 @@ from ham.dxcc import *
 from ham.qsosvr import *
 from ham.rbn import *
 from ham.telnet import *
+from ham.radio import *
+from ham.rotator import *
+
