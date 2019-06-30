@@ -147,19 +147,21 @@ class Beacons(object):
             next_station = self.getstation()  # Returns an Array of Stations
             self.logger.info("--------------")
             for ns in next_station:
-                self.logger.info(str.format('Call {} Country {} Freq {}',
+                self.logger.info(str.format('Call {:10s} Country {:30s} Freq {:7.2f}',
                                             ns[BeaconFld.call.value],
                                             ns[BeaconFld.location.value],
                                             ns[BeaconFld.freq.value]))
                 if self.ScreenOutput:
-                    print('' + str.format('Call {} Country {} Freq {}',
+                    print('' + str.format('Call {:10s} Country {:30s} Freq {:7.2f}',
                                           ns[BeaconFld.call.value],
                                           ns[BeaconFld.location.value],
                                           ns[BeaconFld.freq.value]))
 
+            print("-"*70)
             time.sleep(delay)
             tnow, delay = self.getdelay()
         self.logger.info('Loop run ended')
+
 
     def dump_band(self, band_id):
         self.logger.info(str.format('Dumping Band ID {}', band_id))
@@ -169,17 +171,12 @@ class Beacons(object):
 
 if __name__ == "__main__":
     logger = logging.getLogger(__name__)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(' ')
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(logging.INFO)
     handler.setFormatter(formatter)
-
-    # add the handlers to the logger
-    logger.addHandler(handler)
-    logger.setLevel(logging.INFO)
     dx = Beacons()
-    # dx.SetBand(int(sys.argv[1]))
+    dx.SetBand(int(sys.argv[3]))
     dx.beacon_start(timeout=5000)
     dx.dump_band(4)
-    junk = 1
-    junk = 1
+
