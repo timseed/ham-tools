@@ -50,6 +50,6 @@ If you want to see what is going on then add logging in the calling class - and 
 #To Do
 
 * Maybe add 100 Watt, 10 W, 1W and .1W sections
-* Range and bearing from your QTH 
+* Range and Bearing from your QTH 
 
 

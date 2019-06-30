@@ -115,7 +115,7 @@ venv.bak/
 DX.txt
 Evt/
 Gui/
-bearing.py
+ham/calc/bearing.py
 call_subproc1.py
 cty-2604/
 cty.dat

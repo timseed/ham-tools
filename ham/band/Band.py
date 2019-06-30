@@ -1,6 +1,7 @@
+import logging
 class HamBand(object):
     """
-    COnvert from Khz to Meters in Ham Speak terms not literally
+    Convert from Khz to Meters in Ham Speak terms not literally
     """
 
     def __init__(self):
@@ -30,14 +31,18 @@ class HamBand(object):
 
         rv = None
         for b in self._band_plan:
-            if Khz >= b[1][0] and Khz <= b[1][1]:
+            if b[1][0] <= Khz <= b[1][1]:
                 rv = b[0]
                 break
         return rv
 
-    def Index(self, M):
+    def index(self, M):
         "Return the INDEX of the Band"
         if M in self.Band:
             return self.Band.index(M)
         else:
             return -1
+
+    @property
+    def contest(self) -> list:
+        return self.ContestBand
