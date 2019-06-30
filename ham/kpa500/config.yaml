@@ -1,0 +1,3 @@
+kpa500cls:
+    device: /dev/tty.usbserial-A704EX0B
+    speed:  38400
