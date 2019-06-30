@@ -48,7 +48,7 @@ def dxspider_tests():
     dxs = dxspider(host, port, call)
     if dxs.do_connect():
         for i in range(2000):
-            dxs.GetDx()
+            dxs.get_dx()
 
 
 def rbn_tests():

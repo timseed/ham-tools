@@ -1,11 +1,18 @@
 import socket, select, sys
 import logging
 from datetime import datetime
+
 __author__ = 'timothyhseed'
 
 
 class dxspider(object):
-    def __init__(self, node, port, call):
+    def __init__(self, node: str, port: int, call: str) -> None:
+        """
+
+        :param node:
+        :param port:
+        :param call:
+        """
 
         self.node = node
         self.port = port
@@ -14,14 +21,13 @@ class dxspider(object):
         self.firsttime = True
         self.socket_list = []
         self.logger = logging.getLogger()
-        print(str.format('logger Name is {}',self.logger.name))
+        print(str.format('logger Name is {}', self.logger.name))
         self.logger.info(str.format('Node is {}', node))
         self.logger.info(str.format('port is {}', port))
         self.logger.info(str.format('User is {}', call))
 
     def __del__(self):
         self.logger.info(str.format('destructor being called '))
-
 
     def do_connect(self):
         self.logger.info(str.format('Do_Connect'))
@@ -33,12 +39,12 @@ class dxspider(object):
         try:
             self.s.connect((self.node, int(self.port)))
         except Exception as err:
-            print('Unable to connect '+str(err))
+            print('Unable to connect ' + str(err))
             return False
         print('Connected to remote host')
         return True
 
-    def GetDx(self, msg_to_send=""):
+    def get_dx(self, msg_to_send=""):
         self.socket_list = [sys.stdin, self.s]
 
         # Get the list sockets which are readable
@@ -59,10 +65,10 @@ class dxspider(object):
                 else:
                     # print data
                     try:
-                        nw=datetime.now()
-                        sys.stdout.write(str(nw.isoformat(sep=' '))+"   "+data.decode('utf-8'))
+                        nw = datetime.now()
+                        sys.stdout.write(str(nw.isoformat(sep=' ')) + "   " + data.decode('utf-8'))
                     except:
-                        junk=1
+                        junk = 1
                         pass
 
             # user entered a message
@@ -70,36 +76,3 @@ class dxspider(object):
                 if len(msg_to_send):
                     msg = sys.stdin.readline()
                     self.s.send(msg.encode())
-
-
-# main function
-if __name__ == "__main__":
-
-    logger = logging.getLogger(__name__)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setLevel(logging.INFO)
-    handler.setFormatter(formatter)
-    # add the handlers to the logger
-    logger.addHandler(handler)
-
-    if (len(sys.argv) < 3):
-        print('Usage : python telnet.py hostname port callsign')
-        print('Defaulting to gb7mbc.spoo.org 8000 a45wg')
-        print('got {} args'.format(len(sys.argv)))
-        host = "gb7mbc.spoo.org"
-        port = 8000
-        call = "a45wg"
-
-        #dxc.nc7j.com 7300
-        #olson.net.nz 9000 - was not working
-        #zl2arn.dyndns.org:7300
-    else:
-        host = sys.argv[1]
-        port = int(sys.argv[2])
-        call = sys.argv[3]
-
-    dxs = dxspider(host, port, call)
-    if dxs.do_connect():
-        for i in range(2000):
-            dxs.GetDx()

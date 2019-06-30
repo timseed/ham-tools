@@ -1,4 +1,4 @@
-from kpa500cls import kpa500cls
+from ham.kpa500 import Kpa500
 import cherrypy
 import logging
 import os
@@ -35,7 +35,7 @@ class webkpa(object):
     def __init__(self, config_file):
         self.l = logging.getLogger(__name__)
         self.dbg("KPA Web Starting")
-        self.amp = kpa500cls(config_file)
+        self.amp = Kpa500(config_file)
         self.dbg("kpaconfig read and processed")
         self.cmd=""
 

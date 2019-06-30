@@ -6,12 +6,12 @@ from time import sleep
 import collections
 
 
-class kpa500cls(object):
-    def __init__(self, config_file):
+class Kpa500(object):
+    def __init__(self, config_file:str) -> None:
 
         b = [160, 80, 60, 40, 30, 20, 17, 15, 12, 10, 6]
         self.Bands = {}
-
+        self.logger  = logging.getLogger(__name__)
         tmp = 0
         for bb in b:
             self.Bands[bb] = "{:02d}".format(tmp)
@@ -45,110 +45,75 @@ class kpa500cls(object):
 
         self.l = logging.getLogger(__name__)
         with open(config_file, 'r') as ymlfile:
-            self.dbg("Opened file " + config_file)
+            self.logger.debug("Opened file " + config_file)
             cfg = yaml.load(ymlfile)
             try:
-                self.device = cfg['kpa500cls']['device']
-                self.dbg('Read Yaml device set to {}'.format(self.device))
+                self.device = cfg['Kpa500']['device']
+                self.logger.debug('Read Yaml device set to {}'.format(self.device))
             except Exception as e:
-                self.err('Could not get value for kpa500cls:device from config file' + str(e))
+                self.logger.error('Could not get value for Kpa500:device from config file' + str(e))
             try:
-                self.speed = cfg['kpa500cls']['speed']
-                self.dbg('Read Yaml speed set to {}'.format(self.speed))
+                self.speed = cfg['Kpa500']['speed']
+                self.logger.debug('Read Yaml speed set to {}'.format(self.speed))
             except Exception as e:
-                self.err('Could not get value for kpa500cls:speed from config file' + str(e))
+                self.logger.error('Could not get value for Kpa500:speed from config file' + str(e))
 
         try:
-            self.dbg("Trying to connect to the Serial device {}".format(self.device))
+            self.logger.debug("Trying to connect to the Serial device {}".format(self.device))
             self.serial_port = serial.Serial(port=self.device, baudrate=self.speed)
             if self.serial_port.is_open:
-                self.info('Connected to {} OK'.format(self.serial_port))
+                self.logger.info('Connected to {} OK'.format(self.serial_port))
 
         except Exception as e:
-            self.err('Error connecting to {}: Error is {}'.format(self.device, str(e)))
+            self.logger.error('Error connecting to {}: Error is {}'.format(self.device, str(e)))
 
-    def info(self, msg):
-        self.l.info(msg)
-
-    def dbg(self, msg):
-        self.l.debug(msg)
-
-    def err(self, msg):
-        self.l.error(msg)
-
+    @property
     def read_kpa(self):
-        self.dbg('read_kpa being called')
+        self.logger.debug('read_kpa being called')
 
-    def getALC(self):
+    @property
+    def get_alc(self):
         try:
-            self.dbg('Trying to get the ALC Value')
+            self.logger.debug('Trying to get the ALC Value')
             self.serial_port.write('^ALC'.encode())
-            self.dbg('Now Read the ALC Value')
+            self.logger.debug('Now Read the ALC Value')
             val = self.serial_port.read_all()
-            self.dbg('ALC Got {}'.format(val))
+            self.logger.debug('ALC Got {}'.format(val))
         except Exception as e:
-            self.err('Error in ALC Function Error is {}'.format(str(e)))
+            self.logger.error('Error in ALC Function Error is {}'.format(str(e)))
 
-    def get(self, Command, EnglishCommand):
+    @property
+    def get(self, command, english_command):
         try:
-            self.dbg('Trying to get the {} using Code {}'.format(EnglishCommand, Command))
-            written = self.serial_port.write(Command.encode())
-            self.dbg('Now Read the {} Value'.format(EnglishCommand))
+            self.logger.debug('Trying to get the {} using Code {}'.format(english_command, command))
+            written = self.serial_port.write(command.encode())
+            self.logger.debug('Now Read the {} Value'.format(english_command))
             sleep(0.3)
             val = self.serial_port.read_all()
             val = val.decode()
-            self.dbg('{} Got {}'.format(Command, val))
+            self.logger.debug('{} Got {}'.format(command, val))
             return val
         except Exception as e:
-            self.err('Error in {} Function Error is {}'.format(Command, str(e)))
+            self.logger.error('Error in {} Function Error is {}'.format(command, str(e)))
 
-    def get_All(self):
-        self.dbg("In get_All")
+    @property
+    def get_all(self):
+        self.logger.debug("In get_All")
         for ky in self.cmd.keys():
             self.get(ky + ';', self.cmd[ky]['Msg'])
 
-    def write(self,cmd):
-       ''' The user should have seen this on screen already '''
-       self.serial_port.write(cmd.encode())
+    @property
+    def write(self, cmd):
+        ''' The user should have seen this on screen already '''
+        self.serial_port.write(cmd.encode())
 
-
-    def setBand(self):
+    @property
+    def get_band(self):
         try:
-            self.dbg('Trying to set the Band Value')
+            self.logger.debug('Trying to set the Band Value')
             self.serial_port.write('^BN06;'.encode())
-            self.dbg('Now Read the BN Value')
+            self.logger.debug('Now Read the BN Value')
             val = self.serial_port.read_all()
-            self.dbg('BN Got {}'.format(val))
+            self.logger.debug('BN Got {}'.format(val))
         except Exception as e:
-            self.err('Error in BN Function Error is {}'.format(str(e)))
-
-
-if __name__ == "__main__":
-
-    import yaml
-    import logging
-    import logging.config
-    from time import sleep
-    import pprint
-
-    with open('logging.yaml', 'rt') as f:
-        config = yaml.safe_load(f.read())
-        logging.config.dictConfig(config)
-        log = logging.getLogger(__name__)
-        linear = kpa500cls('config.yaml')
-        # linear.setBand()
-        # sleep(1)
-        # linear.get('^BN;','Band Mode')
-        #linear.get_All()
-        pprint.pprint(linear.cmd)
-        for k in linear.cmd.keys():
-            print("k: {}".format(k))
-        print("Number of keys is {}".format(len(linear.cmd.keys())))
-        print("======RW=====")
-        t=[]
-        for k in linear.cmd.keys():
-            if linear.cmd[k]['RW']==True:
-                t.append(k)
-        pprint.pprint(t)
-        print("Keys with True are {}".format(len(t)))
-
+            self.logger.error('Error in BN Function Error is {}'.format(str(e)))
