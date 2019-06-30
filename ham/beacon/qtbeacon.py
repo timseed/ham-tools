@@ -8,9 +8,9 @@ from ham.beacon.beacons import *
 #This code requires QT
 
 
-class qtbeacon(QtCore.QThread,beacons):
+class qtbeacon(QtCore.QThread, Beacons):
     """
-    Same as the beacon class however this emits a signal called BEACON
+    Same as the Beacon class however this emits a signal called BEACON
 
     Note: This needs to inherit from 2 classes and the emit need to be of type QObject else it does not like to play
     """

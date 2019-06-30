@@ -7,28 +7,28 @@ from enum import Enum
 __author__ = 'timseed'
 
 
-class beaconFld(Enum):
+class BeaconFld(Enum):
     call, location, freq = range(3)
 
 
-class beacon(object):
+class Beacon(object):
     freq = [14.1, 18.11, 21.15, 24.930, 28.2]  # in Mhz
 
-    def __init__(self, CALL, Country, b14, b18, b21, b24, b28, Owner, status):
-        self.CALL = CALL
-        self.Country = Country
+    def __init__(self, call, country, b14, b18, b21, b24, b28, owner, status):
+        self.CALL = call
+        self.Country = country
         self.band_time = []
-        self.band_time.append(beacon.time_str_to_secs(b14))
-        self.band_time.append(beacon.time_str_to_secs(b18))
-        self.band_time.append(beacon.time_str_to_secs(b21))
-        self.band_time.append(beacon.time_str_to_secs(b24))
-        self.band_time.append(beacon.time_str_to_secs(b28))
-        self.Owner = Owner
+        self.band_time.append(Beacon.time_str_to_secs(b14))
+        self.band_time.append(Beacon.time_str_to_secs(b18))
+        self.band_time.append(Beacon.time_str_to_secs(b21))
+        self.band_time.append(Beacon.time_str_to_secs(b24))
+        self.band_time.append(Beacon.time_str_to_secs(b28))
+        self.owner = owner
         self.status = status
         self.logger = logging.getLogger(__name__)
 
     @staticmethod
-    def time_str_to_secs(tstr):
+    def time_str_to_secs(tstr: str) -> int:
 
         '''
         Replace Time_Str to seconds
@@ -36,76 +36,74 @@ class beacon(object):
         :return: int time_in_seconds
         '''
         try:
-            min, sec = tstr.split(':')
-            return int(min) * 60 + int(sec)
-        except:
+            minute, sec = tstr.split(':')
+            return int(minute) * 60 + int(sec)
+        except ValueError:
             return -1
 
 
-class beacons(object):
+class Beacons(object):
     # Some Signals we want to send from this class
     freq = [14.1, 18.11, 21.15, 24.930, 28.2]  # in Mhz
     ref_datetime = datetime.datetime(2016, 1, 1, 0, 0, 1)
 
-    def __init__(self, ScreenOutput=False):
+    def __init__(self, screenoutput=False):
         self.logger = logging.getLogger(__name__)
         self.bands = [14, 18, 21, 24, 28]  # in Mhz
         self.selected_band = -1  # Means ALL BANDS
         self.beacons = []
-        self.ScreenOutput = ScreenOutput
+        self.ScreenOutput = screenoutput
         # Setup the Beacon Definitions
-        self.beacons.append(beacon('U1UN', 'United Nations', '00:00', '00:10', '00:20', '00:30', '00:40', 'UNRC', 'OK'))
-        self.beacons.append(beacon('VE8AT', 'Canada', '00:10', '00:20', '00:30', '00:40', '00:50', 'RAC/NARC', 'OK'))
-        self.beacons.append(beacon('W6WX', 'United States', '00:20', '00:30', '00:40', '00:50', '01:00', 'NCDXF', 'OK'))
-        self.beacons.append(beacon('KH6RS', 'Hawaii', '00:30', '00:40', '00:50', '01:00', '01:10', 'Maui ARC', 'OFF9'))
-        self.beacons.append(beacon('ZL6B', 'New Zealand', '00:40', '00:50', '01:00', '01:10', '01:20', 'NZART', 'OK'))
-        self.beacons.append(beacon('VK6RBP', 'Australia', '00:50', '01:00', '01:10', '01:20', '01:30', 'WIA', 'OFF4'))
-        self.beacons.append(beacon('JA2IGY', 'Japan', '01:00', '01:10', '01:20', '01:30', '01:40', 'JARL', 'OK'))
-        self.beacons.append(beacon('RR9O', 'Russia', '01:10', '01:20', '01:30', '01:40', '01:50', 'SRR', 'OK'))
-        self.beacons.append(beacon('VR2B', 'Hong Kong', '01:20', '01:30', '01:40', '01:50', '02:00', 'HARTS', 'OK'))
-        self.beacons.append(beacon('4S7B', 'Sri Lanka', '01:30', '01:40', '01:50', '02:00', '02:10', 'RSSL', 'OK'))
-        self.beacons.append(beacon('ZS6DN', 'South Africa', '01:40', '01:50', '02:00', '02:10', '02:20', 'ZS6DN', 'OK'))
-        self.beacons.append(beacon('5Z4B', 'Kenya', '01:50', '02:00', '02:10', '02:20', '02:30', 'ARSK', 'OK'))
-        self.beacons.append(beacon('4X6TU', 'Israel', '02:00', '02:10', '02:20', '02:30', '02:40', 'IARC', 'OK'))
-        self.beacons.append(beacon('OH2B', 'Finland', '02:10', '02:20', '02:30', '02:40', '02:50', 'SRAL', 'OK'))
-        self.beacons.append(beacon('CS3B', 'Madeira', '02:20', '02:30', '02:40', '02:50', '00:00', 'ARRM', 'OFF4'))
-        self.beacons.append(beacon('LU4AA', 'Argentina', '02:30', '02:40', '02:50', '00:00', '00:10', 'RCA', 'OK'))
-        self.beacons.append(beacon('OA4B', 'Peru', '02:40', '02:50', '00:00', '00:10', '00:20', 'RCP', 'OK'))
-        self.beacons.append(beacon('YV5B', 'Venezuela', '02:50', '00:00', '00:10', '00:20', '00:30', 'RCV', 'OK'))
+        self.beacons.append(Beacon('U1UN', 'United Nations', '00:00', '00:10', '00:20', '00:30', '00:40', 'UNRC', 'OK'))
+        self.beacons.append(Beacon('VE8AT', 'Canada', '00:10', '00:20', '00:30', '00:40', '00:50', 'RAC/NARC', 'OK'))
+        self.beacons.append(Beacon('W6WX', 'United States', '00:20', '00:30', '00:40', '00:50', '01:00', 'NCDXF', 'OK'))
+        self.beacons.append(Beacon('KH6RS', 'Hawaii', '00:30', '00:40', '00:50', '01:00', '01:10', 'Maui ARC', 'OFF9'))
+        self.beacons.append(Beacon('ZL6B', 'New Zealand', '00:40', '00:50', '01:00', '01:10', '01:20', 'NZART', 'OK'))
+        self.beacons.append(Beacon('VK6RBP', 'Australia', '00:50', '01:00', '01:10', '01:20', '01:30', 'WIA', 'OFF4'))
+        self.beacons.append(Beacon('JA2IGY', 'Japan', '01:00', '01:10', '01:20', '01:30', '01:40', 'JARL', 'OK'))
+        self.beacons.append(Beacon('RR9O', 'Russia', '01:10', '01:20', '01:30', '01:40', '01:50', 'SRR', 'OK'))
+        self.beacons.append(Beacon('VR2B', 'Hong Kong', '01:20', '01:30', '01:40', '01:50', '02:00', 'HARTS', 'OK'))
+        self.beacons.append(Beacon('4S7B', 'Sri Lanka', '01:30', '01:40', '01:50', '02:00', '02:10', 'RSSL', 'OK'))
+        self.beacons.append(Beacon('ZS6DN', 'South Africa', '01:40', '01:50', '02:00', '02:10', '02:20', 'ZS6DN', 'OK'))
+        self.beacons.append(Beacon('5Z4B', 'Kenya', '01:50', '02:00', '02:10', '02:20', '02:30', 'ARSK', 'OK'))
+        self.beacons.append(Beacon('4X6TU', 'Israel', '02:00', '02:10', '02:20', '02:30', '02:40', 'IARC', 'OK'))
+        self.beacons.append(Beacon('OH2B', 'Finland', '02:10', '02:20', '02:30', '02:40', '02:50', 'SRAL', 'OK'))
+        self.beacons.append(Beacon('CS3B', 'Madeira', '02:20', '02:30', '02:40', '02:50', '00:00', 'ARRM', 'OFF4'))
+        self.beacons.append(Beacon('LU4AA', 'Argentina', '02:30', '02:40', '02:50', '00:00', '00:10', 'RCA', 'OK'))
+        self.beacons.append(Beacon('OA4B', 'Peru', '02:40', '02:50', '00:00', '00:10', '00:20', 'RCP', 'OK'))
+        self.beacons.append(Beacon('YV5B', 'Venezuela', '02:50', '00:00', '00:10', '00:20', '00:30', 'RCV', 'OK'))
         self.logger.info("Beacon class initialized")
 
-    def SetBand(self, band):
+    def SetBand(self, band: int) -> None:
         if band in self.bands:
             self.selected_band = self.bands.index(band)
             self.logger.info(str.format('Band changed to {}', band))
             self.logger.info(str.format('Freq to Listen is {}', self.freq[self.selected_band]))
-            self.logger.info(str.format('Freq to Listen is {}', self.freq[self.selected_band]))
             if self.ScreenOutput:
                 print('' + (str.format('Band changed to {}', band)))
                 print('' + (str.format('Freq to Listen is {}', self.freq[self.selected_band])))
-
         else:
             self.logger.error(str.format('Bad Band requested {}', band))
 
-    def getdelay(self):
-        tnow = datetime.datetime.now()
-        delay = 10.0 - tnow.timestamp() % 10
+    def getdelay(self) -> tuple:
+        tnow: datetime = datetime.datetime.now()
+        delay: float = 10.0 - tnow.timestamp() % 10
         self.logger.info(str.format("tnow {}   delay {}", tnow, delay))
         return tnow, delay
 
-    def minsec(self, offset):
+    def minsec(self, offset: int) -> tuple:
         '''
         Return Minute and Seconds offset of Timeslice
         :param offset:
         :return: Tuple (Min,Sec)
         '''
-        Min = int(offset / 60)
-        Sec = offset - (Min * 60)
-        return (Min, Sec)
+        minutes: int = int(offset / 60)
+        seconds: int = offset - (minutes * 60)
+        return seconds, seconds
 
-    def getstation(self):
+    def getstation(self) -> list:
         ts_now = datetime.datetime.now()
-        time_diff = (beacons.ref_datetime - ts_now).seconds
+        time_diff = (Beacons.ref_datetime - ts_now).seconds
         next_beacon = ('Unk', 'Unk')
         second_in_phase = ts_now.timestamp() % 180
         self.logger.info("Seconds in Phase = %d" % second_in_phase)
@@ -126,7 +124,7 @@ class beacons(object):
                     self.logger.info(str.format('Band time Index {}  {}',
                                                 b.CALL,
                                                 b.band_time[self.selected_band]))
-                    next_beacon = (b.CALL, b.Country, beacon.freq[self.selected_band])
+                    next_beacon = (b.CALL, b.Country, Beacon.freq[self.selected_band])
                     next_station.append(next_beacon)
                     # We are in Single Band Mode - find one and quit this loop
                     break
@@ -134,13 +132,13 @@ class beacons(object):
             for band in range(5):
                 for b in self.beacons:
                     if b.band_time[band] == next_active:
-                        next_beacon = (b.CALL, b.Country, beacon.freq[band])
+                        next_beacon = (b.CALL, b.Country, Beacon.freq[band])
                         next_station.append(next_beacon)
                         break
 
         return next_station
 
-    def beacon_start(self, timeout=30):
+    def beacon_start(self, timeout: int = 30) -> None:
         tnow, delay = self.getdelay()
         self.logger.info(str.format('timenow is {}', tnow.timestamp()))
         self.logger.info(str.format('delay   is {}', delay))
@@ -150,14 +148,14 @@ class beacons(object):
             self.logger.info("--------------")
             for ns in next_station:
                 self.logger.info(str.format('Call {} Country {} Freq {}',
-                                            ns[beaconFld.call.value],
-                                            ns[beaconFld.location.value],
-                                            ns[beaconFld.freq.value]))
+                                            ns[BeaconFld.call.value],
+                                            ns[BeaconFld.location.value],
+                                            ns[BeaconFld.freq.value]))
                 if self.ScreenOutput:
                     print('' + str.format('Call {} Country {} Freq {}',
-                                          ns[beaconFld.call.value],
-                                          ns[beaconFld.location.value],
-                                          ns[beaconFld.freq.value]))
+                                          ns[BeaconFld.call.value],
+                                          ns[BeaconFld.location.value],
+                                          ns[BeaconFld.freq.value]))
 
             time.sleep(delay)
             tnow, delay = self.getdelay()
@@ -179,7 +177,7 @@ if __name__ == "__main__":
     # add the handlers to the logger
     logger.addHandler(handler)
     logger.setLevel(logging.INFO)
-    dx = beacons()
+    dx = Beacons()
     # dx.SetBand(int(sys.argv[1]))
     dx.beacon_start(timeout=5000)
     dx.dump_band(4)
