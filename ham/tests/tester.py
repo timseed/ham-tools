@@ -1,11 +1,10 @@
 #from ham.adif.adif2csv import adif2csv
 from ham.adif.csv2adif import csv2adif
-from ham.beacon.beacons import *
+from ham.beacon import *
 from ham.qsosvr.dxspider import dxspider
-from ham.rbn.rbn import  rbn
+from ham.rbn.rbn import rbn
 from ham.dxcc import dxcc
-
-from ham.dxcc.dxcc import dxcc
+from ham.dxcc.dxcc import DxCc
 
 def dxcc_tests():
     d = dxcc()
