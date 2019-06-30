@@ -142,7 +142,7 @@ class Beacons(object):
         tnow, delay = self.getdelay()
         self.logger.info(str.format('timenow is {}', tnow.timestamp()))
         self.logger.info(str.format('delay   is {}', delay))
-        while (timeout > 0):
+        while timeout > 0:
             timeout = timeout - delay
             next_station = self.getstation()  # Returns an Array of Stations
             self.logger.info("--------------")
