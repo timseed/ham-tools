@@ -105,3 +105,41 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+.DS_Store
+.idea/.gitignore
+.idea/.name
+.idea/encodings.xml
+.idea/ham.iml
+.idea/misc.xml
+.idea/modules.xml
+DX.txt
+Evt/
+Gui/
+bearing.py
+call_subproc1.py
+cty-2604/
+cty.dat
+dxcc.py
+dxcc/
+dxspider.py
+ham.sh
+ham/.DS_Store
+ham/dxcc/data/
+Would skip repository ham/kpa500/
+ham/rotator/spid_serial3.py
+ham/test/test.yaml
+info_loop.py
+info_loopq.py
+map/
+map2/
+rbn.py
+s.py
+spid3.py
+spid_rotator.py
+spid_rotator.py.bak
+subproc2.py
+subproc3.py
+t.txt
+test.yaml
+Would skip repository txtlib/
+wind_force.py

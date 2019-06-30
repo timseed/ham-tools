@@ -9,5 +9,7 @@ setup(
     license='',
     author='tim',
     author_email='tim@sy-edm.com',
-    description=''
+    description='',
+    requires=["PyQt5"          "wxPython==4.0.6", "cheroot", "CherryPy", "portend", "PyAudio", "pyserial", "pytz",
+              "sip", "six", "tempora"]
 )
