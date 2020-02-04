@@ -126,7 +126,7 @@ unused/ham.sh
 ham/.DS_Store
 ham/dxcc/data/
 Would skip repository ham/kpa500/
-ham/rotator/spid_serial3.py
+ham/equipment/spid/rotator/spid_serial3.py
 ham/tests/test.yaml
 info_loop.py
 info_loopq.py

@@ -1,9 +1,7 @@
 import yaml
-import logging
 import logging.config
-from time import sleep
 import pprint
-from ham.kpa500 import Kpa500
+from ham.equipment.elecraft.kpa500 import Kpa500
 
 with open("logging.yaml", "rt") as f:
     config = yaml.safe_load(f.read())
