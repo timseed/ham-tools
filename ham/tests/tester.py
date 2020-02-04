@@ -1,38 +1,39 @@
-#from ham.adif.adif2csv import adif2csv
-from ham.adif.csv2adif import csv2adif
+# from ham.adif.adif2csv import adif2csv
+from ham.adif.csv2adif import Csv2Adif
 from ham.beacon import *
 from ham.qsosvr.dxspider import dxspider
-from ham.rbn.rbn import rbn
+from ham.rbn.rbn import Rbn
 from ham.dxcc import dxcc
 from ham.dxcc.dxcc import DxCc
+
 
 def dxcc_tests():
     d = dxcc()
     d.read()
     d.showall()
-    #d.show('G')
-    #d.show('F')
-    d.show('M0FGC')
+    # d.show('G')
+    # d.show('F')
+    d.show("M0FGC")
 
 
 def adif_tests():
-    '''
+    """
     csv and adif testing
-    '''
+    """
     cvt = adif2csv(all_lines_same=False)
     cvt.process("asian2006.adif")
     for a in cvt.dump():
-        print('' + a)
+        print("" + a)
 
-    cvt2 = csv2adif("asian2006.csv")
+    cvt2 = Csv2Adif("asian2006.csv")
     for a in cvt2.process():
-        print('' + a)
+        print("" + a)
 
 
 def beacon_tests():
-    '''
+    """
     Beacons testing
-    '''
+    """
 
     dx = beacons(ScreenOutput=True)
     dx.SetBand(14)
@@ -52,13 +53,14 @@ def dxspider_tests():
 
 
 def rbn_tests():
-    r = rbn()
+    r = Rbn()
     r.loop()
 
-#dxcc_tests()
-#adif_tests()
-#beacon_tests()
-#dxspider_tests()
+
+# dxcc_tests()
+# adif_tests()
+# beacon_tests()
+# dxspider_tests()
 rbn_tests()
 
 print("Finished Tests")

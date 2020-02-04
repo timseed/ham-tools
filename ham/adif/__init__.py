@@ -1,2 +1,3 @@
-from .adif2csv import adif2csv
-from .csv2adif import csv2adif
+from pkgutil import extend_path
+
+__path__ = extend_path(__path__, __name__)

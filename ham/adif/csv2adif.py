@@ -1,27 +1,25 @@
-
+"""
+Convert Csv to Adif
+"""
 
 import csv
 
 
-class csv2adif(object):
+class Csv2Adif(object):
+    def __init__(self):
+        self.filename = None
 
-    def __init__(self,filename):
-        self.filename=filename
-
-    def process(self):
+    def process(self, filename: str):
+        self.filename = filename
         with open(self.filename) as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                line=''
+                line = ""
                 for fld in reader.fieldnames:
                     if len(row[fld].strip()) > 0:
-                        line = line+str.format("<{}:{}>{} ",fld,len(row[fld].strip()),row[fld].strip())
+                        line = line + str.format(
+                            "<{}:{}>{} ", fld, len(row[fld].strip()), row[fld].strip()
+                        )
 
-                yield(line + " <eor>")
+                yield line + " <eor>"
         csvfile.close()
-
-
-if __name__ == "__main__":
-    cvt = csv2adif("asian2016.csv")
-    for a in cvt.process():
-        print('' + a)

@@ -4,7 +4,9 @@ from ham.beacon import Beacons
 
 if __name__ == "__main__":
     logger = logging.getLogger(__name__)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(logging.INFO)
     handler.setFormatter(formatter)

@@ -1,23 +1,23 @@
 from __future__ import division
-from math import pi, sin, cos, atan2, sqrt, radians, log, tan, degrees
 from datetime import datetime
-
-import pytz
-import ephem
+from math import sin, cos, atan2, sqrt, radians, degrees
 import logging
+import ephem
+import pytz
 
 
-class locator(object):
+class Locator(object):
     """
     Original code from pyham-utils
     """
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.logger.debug('{} initialized')
+        self.logger.debug("{} initialized")
         self.UTC = pytz.UTC
 
-    def latlong_to_locator(self, latitude, longitude):
+    @staticmethod
+    def latlong_to_locator(self, latitude: float, longitude: float) -> str:
 
         """converts WGS84 coordinates into the corresponding Maidenhead Locator
             Args:
@@ -51,23 +51,28 @@ class locator(object):
         if latitude >= 90 or latitude <= -90:
             raise ValueError
 
-        longitude += 180;
-        latitude += 90;
+        longitude += 180.0
+        latitude += 90.0
 
-        locator = chr(ord('A') + int(longitude / 20))
-        locator += chr(ord('A') + int(latitude / 10))
-        locator += chr(ord('0') + int((longitude % 20) / 2))
-        locator += chr(ord('0') + int(latitude % 10))
-        locator += chr(ord('A') + int((longitude - int(longitude / 2) * 2) / (2 / 24)))
-        locator += chr(ord('A') + int((latitude - int(latitude / 1) * 1) / (1 / 24)))
+        locator_str = chr(ord("A") + int(longitude / 20))
+        locator_str += chr(ord("A") + int(latitude / 10))
+        locator_str += chr(ord("0") + int((longitude % 20) / 2))
+        locator_str += chr(ord("0") + int(latitude % 10))
+        locator_str += chr(
+            ord("A") + int((longitude - int(longitude / 2) * 2) / (2 / 24))
+        )
+        locator_str += chr(
+            ord("A") + int((latitude - int(latitude / 1) * 1) / (1 / 24))
+        )
 
-        return locator
+        return locator_str
 
-    def locator_to_latlong(self, locator):
-        """converts Maidenhead locator in the corresponding WGS84 coordinates
+    def locator_to_latlong(self, locator_str):
+        """
+            converts Maidenhead locator in the corresponding WGS84 coordinates
 
             Args:
-                locator (string): Locator, either 4 or 6 characters
+                locator_str (string): Locator, either 4 or 6 characters
 
             Returns:
                 tuple (float, float): Latitude, Longitude
@@ -90,37 +95,37 @@ class locator(object):
 
         """
 
-        locator = locator.upper()
+        locator_str = locator_str.upper()
 
-        if len(locator) == 5 or len(locator) < 4:
+        if len(locator_str) == 5 or len(locator_str) < 4:
             raise ValueError
 
-        if ord(locator[0]) > ord('R') or ord(locator[0]) < ord('A'):
+        if ord(locator_str[0]) > ord("R") or ord(locator_str[0]) < ord("A"):
             raise ValueError
 
-        if ord(locator[1]) > ord('R') or ord(locator[1]) < ord('A'):
+        if ord(locator_str[1]) > ord("R") or ord(locator_str[1]) < ord("A"):
             raise ValueError
 
-        if ord(locator[2]) > ord('9') or ord(locator[2]) < ord('0'):
+        if ord(locator_str[2]) > ord("9") or ord(locator_str[2]) < ord("0"):
             raise ValueError
 
-        if ord(locator[3]) > ord('9') or ord(locator[3]) < ord('0'):
+        if ord(locator_str[3]) > ord("9") or ord(locator_str[3]) < ord("0"):
             raise ValueError
 
-        if len(locator) == 6:
-            if ord(locator[4]) > ord('X') or ord(locator[4]) < ord('A'):
+        if len(locator_str) == 6:
+            if ord(locator_str[4]) > ord("X") or ord(locator_str[4]) < ord("A"):
                 raise ValueError
-            if ord(locator[5]) > ord('X') or ord(locator[5]) < ord('A'):
+            if ord(locator_str[5]) > ord("X") or ord(locator_str[5]) < ord("A"):
                 raise ValueError
 
-        longitude = (ord(locator[0]) - ord('A')) * 20 - 180
-        latitude = (ord(locator[1]) - ord('A')) * 10 - 90
-        longitude += (ord(locator[2]) - ord('0')) * 2
-        latitude += (ord(locator[3]) - ord('0'))
+        longitude = (ord(locator_str[0]) - ord("A")) * 20 - 180
+        latitude = (ord(locator_str[1]) - ord("A")) * 10 - 90
+        longitude += (ord(locator_str[2]) - ord("0")) * 2
+        latitude += ord(locator_str[3]) - ord("0")
 
-        if len(locator) == 6:
-            longitude += ((ord(locator[4])) - ord('A')) * (2 / 24)
-            latitude += ((ord(locator[5])) - ord('A')) * (1 / 24)
+        if len(locator_str) == 6:
+            longitude += ((ord(locator_str[4])) - ord("A")) * (2 / 24)
+            latitude += ((ord(locator_str[5])) - ord("A")) * (1 / 24)
 
             # move to center of subsquare
             longitude += 1 / 24
@@ -128,12 +133,12 @@ class locator(object):
 
         else:
             # move to center of square
-            longitude += 1;
-            latitude += 0.5;
+            longitude += 1
+            latitude += 0.5
 
         return latitude, longitude
 
-    def calculate_distance(self, locator1, locator2):
+    def calculate_distance_km(self, locator1, locator2):
         """calculates the (shortpath) distance between two Maidenhead locators
 
             Args:
@@ -150,7 +155,7 @@ class locator(object):
             Example:
                The following calculates the distance between two Maidenhead locators in km
 
-               >>> from pyhamtools.locator import calculate_distance
+               >>> from pyhamtools.Locator import calculate_distance
                >>> calculate_distance("JN48QM", "QF67bf")
                16466.413
 
@@ -164,15 +169,17 @@ class locator(object):
         d_long = radians(long2) - radians(long1)
 
         r_lat1 = radians(lat1)
-        r_long1 = radians(long1)
+        # r_long1 = radians(long1)
         r_lat2 = radians(lat2)
-        r_long2 = radians(long2)
+        # r_long2 = radians(long2)
 
-        a = sin(d_lat / 2) * sin(d_lat / 2) + cos(r_lat1) * cos(r_lat2) * sin(d_long / 2) * sin(d_long / 2)
+        a = sin(d_lat / 2) * sin(d_lat / 2) + cos(r_lat1) * cos(r_lat2) * sin(
+            d_long / 2
+        ) * sin(d_long / 2)
         c = 2 * atan2(sqrt(a), sqrt(1 - a))
         d = R * c  # distance in km
 
-        return d;
+        return d
 
     def calculate_distance_longpath(self, locator1, locator2):
         """calculates the (longpath) distance between two Maidenhead locators
@@ -190,15 +197,15 @@ class locator(object):
 
             Example:
                The following calculates the longpath distance between two Maidenhead locators in km
-
-               >>> from locator import calculate_distance_longpath
-               >>> calculate_distance_longpath("JN48QM", "QF67bf")
+                >>>
+                >>> from locator import calculate_distance_longpath
+                >>> calculate_distance_longpath("JN48QM", "QF67bf")
                23541.5867
 
         """
 
         c = 40008  # [km] earth circumference in kms
-        sp = self.calculate_distance(locator1, locator2)
+        sp = self.calculate_distance_km(locator1, locator2)
 
         return c - sp
 
@@ -236,8 +243,10 @@ class locator(object):
 
         d_lon = radians(long2 - long1)
 
-        b = atan2(sin(d_lon) * cos(r_lat2),
-                  cos(r_lat1) * sin(r_lat2) - sin(r_lat1) * cos(r_lat2) * cos(d_lon))  # Bearing calc
+        b = atan2(
+            sin(d_lon) * cos(r_lat2),
+            cos(r_lat1) * sin(r_lat2) - sin(r_lat1) * cos(r_lat2) * cos(d_lon),
+        )  # Bearing calc
         bd = degrees(b)
         br, bn = divmod(bd + 360, 360)  # the Bearing remainder and final Bearing
 
@@ -272,7 +281,7 @@ class locator(object):
 
         return lp
 
-    def calculate_sunrise_sunset(self, locator, calc_date=datetime.utcnow()):
+    def calculate_sunrise_sunset(self, locator_str, calc_date=datetime.utcnow()):
         """calculates the next sunset and sunrise for a Maidenhead locator at a give date & time
 
             Args:
@@ -308,7 +317,7 @@ class locator(object):
         evening_dawn = None
         sunset = None
 
-        latitude, longitude = self.locator_to_latlong(locator)
+        latitude, longitude = self.locator_to_latlong(locator_str)
 
         if type(calc_date) != datetime:
             raise ValueError
@@ -326,7 +335,7 @@ class locator(object):
             nextrise = home.next_rising(sun)
             nextset = home.next_setting(sun)
 
-            home.horizon = '-6'
+            home.horizon = "-6"
             beg_twilight = home.next_rising(sun, use_center=True)
             end_twilight = home.next_setting(sun, use_center=True)
 
@@ -349,34 +358,17 @@ class locator(object):
             sunset = None
 
         result = {}
-        result['morning_dawn'] = morning_dawn
-        result['sunrise'] = sunrise
-        result['evening_dawn'] = evening_dawn
-        result['sunset'] = sunset
+        result["morning_dawn"] = morning_dawn
+        result["sunrise"] = sunrise
+        result["evening_dawn"] = evening_dawn
+        result["sunset"] = sunset
 
         if morning_dawn:
-            result['morning_dawn'] = morning_dawn.replace(tzinfo=self.UTC)
+            result["morning_dawn"] = morning_dawn.replace(tzinfo=self.UTC)
         if sunrise:
-            result['sunrise'] = sunrise.replace(tzinfo=self.UTC)
+            result["sunrise"] = sunrise.replace(tzinfo=self.UTC)
         if evening_dawn:
-            result['evening_dawn'] = evening_dawn.replace(tzinfo=self.UTC)
+            result["evening_dawn"] = evening_dawn.replace(tzinfo=self.UTC)
         if sunset:
-            result['sunset'] = sunset.replace(tzinfo=self.UTC)
+            result["sunset"] = sunset.replace(tzinfo=self.UTC)
         return result
-
-
-if __name__ == "__main__":
-    l = locator()
-    mct_grid = l.latlong_to_locator(23.3, 58.3)
-    print('{} is 23.3 58.3 '.format(mct_grid))
-    pos = l.locator_to_latlong(mct_grid)
-    print('grid {} is {}'.format(mct_grid, pos))
-    # Get Telepayong grid
-    tele_grid = l.latlong_to_locator(15.19, 120.78)
-    dist = l.calculate_distance(mct_grid, tele_grid)
-    short_path_bearing = l.calculate_heading(mct_grid, tele_grid)
-    long_path_bearing = l.calculate_heading_longpath(mct_grid, tele_grid)
-    print('MCT TO Telepayong')
-    print('Distance {} kms'.format(dist))
-    print('Bearing Short Path {} '.format(short_path_bearing))
-    print('Bearing Long  Path {} '.format(long_path_bearing))

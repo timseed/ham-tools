@@ -3,7 +3,6 @@ from ham.dxcc import DxccAll
 
 
 class TestDxccAll(TestCase):
-
     def setUp(self) -> None:
         self.dxcc_all = DxccAll()
 
@@ -15,7 +14,9 @@ class TestDxccAll(TestCase):
 
     def test_correctdata(self):
         self.assertEqual(self.dxcc_all.correctdata("A4", "YG0[54]"), ("A4", "YG0[54]"))
-        self.assertEqual(self.dxcc_all.correctdata("AA4", "YG0[54]"), ("AA4", "YG0[54]"))
+        self.assertEqual(
+            self.dxcc_all.correctdata("AA4", "YG0[54]"), ("AA4", "YG0[54]")
+        )
         self.assertEqual(self.dxcc_all.correctdata("A4", "YG0(54)"), ("A4", "YG0(54)"))
         self.assertEqual(self.dxcc_all.correctdata("A4", "YG0{54}"), ("A4", "YG0{54}"))
 
@@ -39,5 +40,3 @@ class TestDxccAll(TestCase):
         self.assertIsNotNone(self.dxcc_all.find("A45WG"))
         self.assertIsNotNone(self.dxcc_all.find("DU3TIM"))
         self.assertIsNotNone(self.dxcc_all.find("DU3TIM"))
-
-
