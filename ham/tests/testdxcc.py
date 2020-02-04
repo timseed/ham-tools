@@ -1,44 +1,43 @@
 from unittest import TestCase
-
-from ham.calc.locator import Locator
-from ham.dxcc import DxCc, DxccAll
+from ham.calc import Locator
+from ham.dxcc import Dxcc,DxccAll
 
 
 class TestDxccAll(TestCase):
     def setUp(self):
-        self.dxcc = DxCc("A4", "Oman", 23, 13, "As", 21.1, 58.2, 4.0)
+        self.dxcc = Dxcc("A4", "Oman", 23, 13, "As", 21.1, 58.2, 4.0)
         self.loc = Locator()
         self.assertTrue(self.dxcc)
 
     def test_continent(self):
-        self.assertEqual(self.dxcc.continent_abbreviation, "As")
+        self.assertEqual(self.dxcc.Continent_Abbreviation, "As")
 
     def test_name(self):
-        self.assertEqual(self.dxcc.country_name, "Oman")
+        self.assertEqual(self.dxcc.Country_Name, "Oman")
 
     def test_cq_zone(self):
-        self.assertEqual(self.dxcc.cq_zone, 23)
+        self.assertEqual(self.dxcc.CQ_Zone, 23)
 
     def test_itu_zone(self):
-        self.assertEqual(self.dxcc.itu_zone, 13)
+        self.assertEqual(self.dxcc.ITU_Zone, 13)
 
     def test_lat(self):
-        self.assertEqual(self.dxcc.latitude, 21.1)
+        self.assertEqual(self.dxcc.Latitude, 21.1)
 
     def test_lon(self):
-        self.assertEqual(self.dxcc.longitude, 58.2)
+        self.assertEqual(self.dxcc.Longitude, 58.2)
 
     def test_timeoffset(self):
-        self.assertEqual(self.dxcc.local_time_offset, 4.0)
+        self.assertEqual(self.dxcc.Local_time_offset, 4.0)
 
     def test_dxcc_list(self):
         b = DxccAll()
         manila = b.find("DU1ABC")
-        manila_loc = self.loc.latlong_to_locator(manila.latitude, manila.longitude)
+        manila_loc = self.loc.latlong_to_locator(manila.Latitude, manila.Longitude)
         for ctry in ["A9", "G", "KH6", "JA", "K", "VR2"]:
             tmp_ctry = b.find(ctry)
             tmp_locator = self.loc.latlong_to_locator(
-                tmp_ctry.latitude, tmp_ctry.longitude
+                tmp_ctry.Latitude, tmp_ctry.Longitude
             )
 
             distance = self.loc.calculate_distance_km(manila_loc, tmp_locator)

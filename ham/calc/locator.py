@@ -17,7 +17,7 @@ class Locator(object):
         self.UTC = pytz.UTC
 
     @staticmethod
-    def latlong_to_locator(self, latitude: float, longitude: float) -> str:
+    def latlong_to_locator(latitude: float, longitude: float) -> str:
 
         """converts WGS84 coordinates into the corresponding Maidenhead Locator
             Args:
@@ -67,7 +67,8 @@ class Locator(object):
 
         return locator_str
 
-    def locator_to_latlong(self, locator_str):
+    @staticmethod
+    def locator_to_latlong(locator_str):
         """
             converts Maidenhead locator in the corresponding WGS84 coordinates
 

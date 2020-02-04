@@ -3,15 +3,15 @@ import socket, select
 import sys
 
 
-class telnet(object):
+class Telnet(object):
     def __init__(self):
-        HOST = "gb7mbc.spoo.org"  # The remote host
-        PORT = 8000  # The same port as used by the server
+        host = "gb7mbc.spoo.org"  # The remote host
+        port = 8000  # The same port as used by the server
         s = None
 
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        addr = socket.gethostbyname(HOST)
-        self.s.connect((addr, PORT))
+        addr = socket.gethostbyname(host)
+        self.s.connect((addr, port))
         while 1:
             socket_list = [sys.stdin, self.s]
 
@@ -36,19 +36,12 @@ class telnet(object):
                     msg = sys.stdin.readline()
                     s.send(msg)
 
-    def SendData(self, utf_str):
+    def senddata(self, utf_str):
         datab = utf_str.encode("utf-8")
         self.s.sendall(datab)
 
-    def GetData(self):
+    def getdata(self):
         data = self.s.recv(1024)
         # print('Received', repr(data))
         ds = data.decode("utf-8")
         return ds
-
-
-if __name__ == "__main__":
-    tnc = telnet()
-    print("done")
-
-# gb7mbc.spoo.org

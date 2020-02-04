@@ -1,7 +1,6 @@
 from unittest import TestCase
 
-from ham.adif.adif2csv import Adif2Csv
-from ham.adif.csv2adif import Csv2Adif
+from ham.adif import Adif2Csv, Csv2Adif
 
 
 class TestCalcLocator(TestCase):
@@ -2051,4 +2050,3 @@ For further info visit: http://www.dl2rum.de
         self.assertIsInstance(self.a2c, Adif2Csv)
         self.assertIsInstance(self.c2a, Csv2Adif)
 
-    def

@@ -1,7 +1,6 @@
 from unittest import TestCase
 
-from ham.calc.locator import Locator
-from ham.calc.windforce import WindForce
+from ham.calc import Locator, WindForce
 
 
 class TestCalcLocator(TestCase):

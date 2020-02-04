@@ -3,12 +3,12 @@ from ham.adif.csv2adif import Csv2Adif
 from ham.beacon import *
 from ham.qsosvr.dxspider import dxspider
 from ham.rbn.rbn import Rbn
-from ham.dxcc import dxcc
-from ham.dxcc.dxcc import DxCc
+from ham.dxcc import dxcc_country
+from ham.dxcc.dxcc_country import DxCc
 
 
 def dxcc_tests():
-    d = dxcc()
+    d = dxcc_country()
     d.read()
     d.showall()
     # d.show('G')

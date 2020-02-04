@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from ham.band.Band import HamBand
+from ham.band import HamBand
 
 
 class TestCalcLocator(TestCase):
