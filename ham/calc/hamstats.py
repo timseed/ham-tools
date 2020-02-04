@@ -1,6 +1,6 @@
 import logging
-from rbn import HamBand
-from dxcc import dxcc_all
+from ham.band import HamBand
+from ham.dxcc import DxccAll
 from datetime import datetime
 
 
@@ -13,16 +13,16 @@ class WorkedCountries(object):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         hb = HamBand()
-        d = dxcc_all()
-        Status = [False]
+        d = DxccAll()
+        status = [False]
 
-        Status = [False]
+        status = [False]
         self.Countries_Band_To_Work = {}
 
         for c in d.CountryList():
             self.Countries_Band_To_Work[c] = {}
             for b in hb.Band:
-                for s in Status:
+                for s in status:
                     self.Countries_Band_To_Work[c][b] = {}
                     self.Countries_Band_To_Work[c][b] = {"status": s}
 
@@ -36,7 +36,7 @@ class ContestCountries(WorkedCountries):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.hb = HamBand()
-        d = dxcc_all()
+        d = DxccAll()
         d.read()
         Status = [0]
 

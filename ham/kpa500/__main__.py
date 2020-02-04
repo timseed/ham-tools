@@ -3,12 +3,13 @@ import logging
 import logging.config
 from time import sleep
 import pprint
+from ham.kpa500 import Kpa500
 
 with open("logging.yaml", "rt") as f:
     config = yaml.safe_load(f.read())
     logging.config.dictConfig(config)
     log = logging.getLogger(__name__)
-    linear = kpa500cls("config.yaml")
+    linear = Kpa500("config.yaml")
     # linear.setBand()
     # sleep(1)
     # linear.get('^BN;','Band Mode')

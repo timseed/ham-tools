@@ -159,6 +159,3 @@ class Adif2Csv(object):
                 for k, v in od.items():
                     out = out + str.format("{},", v)
                 yield out + "\n"
-
-
-

@@ -8,7 +8,7 @@ from ham.beacon.beacons import *
 # This code requires QT
 
 
-class qtbeacon(QtCore.QThread, Beacons):
+class QtBeacon(QtCore.QThread, Beacons):
     """
     Same as the Beacon class however this emits a signal called BEACON
 
@@ -27,7 +27,7 @@ class qtbeacon(QtCore.QThread, Beacons):
         Return the list
         :return:
         """
-        next_station = super(qtbeacon, self).getstation()
+        next_station = super(QtBeacon, self).getstation()
         self.logger.debug("Emit BEACON")
         self.BEACON.emit(next_station)
         return next_station
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     # add the handlers to the logger
     logger.addHandler(handler)
     logger.setLevel(logging.INFO)
-    dx = qtbeacon()
+    dx = QtBeacon()
     # dx.SetBand(int(sys.argv[1]))
     dx.beacon_start()
     # dx.dump_band(4)

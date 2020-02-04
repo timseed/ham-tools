@@ -1,8 +1,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QLabel, QGridLayout
 
 
-class beaconWidget(QtWidgets.QWidget):
+class BeaconWidget(QtWidgets.QWidget):
     def __init__(self, parent=None, call="", range=0, bearing=0, freq=123):
 
         QtWidgets.QWidget.__init__(self, parent)

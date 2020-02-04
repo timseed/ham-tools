@@ -81,7 +81,7 @@ class spid(object):
 
     def stop(self):
         out = chr(87) + self.zero5 + self.zero5 + chr(15) + chr(32)
-        x = self.ser.write(out)
+        self.ser.write(out)
         # Wait for answer from controller
         sleep(0.5)
 
@@ -100,7 +100,7 @@ class spid(object):
     def status(self):
         # Build the status command word.
         out = chr(87) + self.zero5 + self.zero5 + chr(31) + chr(32)
-        x = self.ser.write(out)
+        self.ser.write(out)
         # Wait for answer from controller
         sleep(0.5)
 
@@ -130,7 +130,7 @@ class spid(object):
             # Build message to be sent to controller
             out = chr(87) + str(az) + chr(48) + chr(1) + self.zero5 + chr(47) + chr(32)
             # Send message to Controller
-            x = self.ser.write(out)
+            self.ser.write(out)
 
     def __del__(self):
         self.ser.flushInput()

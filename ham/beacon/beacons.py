@@ -342,8 +342,8 @@ class Beacons(object):
         if self.selected_band != -1:
             for b in self.beacons:
                 if (
-                        self.selected_band != -1
-                        and b.band_time[self.selected_band] == next_active
+                    self.selected_band != -1
+                    and b.band_time[self.selected_band] == next_active
                 ):
                     self.logger.info(
                         str.format(

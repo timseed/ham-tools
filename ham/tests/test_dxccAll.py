@@ -23,10 +23,10 @@ class TestDxccAll(TestCase):
     def test_read(self):
         self.assertGreater(self.dxcc_all.read(), 400)
 
-    #def test_show(self):
+    # def test_show(self):
     #    self.assertEqual(self.dxcc_all.show("A45wg"), None)
 
-    #def test_showall(self):
+    # def test_showall(self):
     #    self.assertIsInstance(self.dxcc_all.showall(), None)
 
     def test_std_call(self):

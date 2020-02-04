@@ -1,9 +1,9 @@
 import yaml
 import logging
 import serial
-from collections import namedtuple
 from time import sleep
 import collections
+from typing import Optional
 
 
 class Kpa500(object):
@@ -157,24 +157,25 @@ class Kpa500(object):
                 "Error in {} Function Error is {}".format(command, str(e))
             )
 
-    @property
-    def get_all(self):
-        self.logger.debug("In get_All")
-        for ky in self.cmd.keys():
-            self.get(ky + ";", self.cmd[ky]["Msg"])
+    # @property
+    # def get_all(self):
+    #     self.logger.debug("In get_All")
+    #     for ky in self.cmd.keys():
+    #         self.get(ky + ";", self.cmd[ky]["Msg"])
 
     @property
     def write(self, cmd):
         """ The user should have seen this on screen already """
-        self.serial_port.write(cmd.encode())
+        return self.serial_port.write(cmd.encode())
 
     @property
-    def get_band(self):
+    def get_band(self) -> Optional[str]:
         try:
             self.logger.debug("Trying to set the Band Value")
             self.serial_port.write("^BN06;".encode())
             self.logger.debug("Now Read the BN Value")
             val = self.serial_port.read_all()
             self.logger.debug("BN Got {}".format(val))
+            return val
         except Exception as e:
             self.logger.error("Error in BN Function Error is {}".format(str(e)))

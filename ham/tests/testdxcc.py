@@ -1,6 +1,6 @@
 from unittest import TestCase
 from ham.calc import Locator
-from ham.dxcc import Dxcc,DxccAll
+from ham.dxcc import Dxcc, DxccAll
 
 
 class TestDxccAll(TestCase):

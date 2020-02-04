@@ -2049,4 +2049,3 @@ For further info visit: http://www.dl2rum.de
     def test_init_ok(self):
         self.assertIsInstance(self.a2c, Adif2Csv)
         self.assertIsInstance(self.c2a, Csv2Adif)
-
