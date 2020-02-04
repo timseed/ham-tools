@@ -24,10 +24,10 @@
 # No warranty is stated nor implied by Alfaradio for this program's use.
 
 
-#This module was converted to Python3 by Tim Seed a45wg@sy-edm.com
-#There are no known issues in using this module
+# This module was converted to Python3 by Tim Seed a45wg@sy-edm.com
+# There are no known issues in using this module
 
-'''
+"""
 Please note The SPID rotator uses 1200 Baud !!
 
 Working:
@@ -36,7 +36,7 @@ Working:
 ToDo:
    check the status and stop functions
 
-'''
+"""
 
 # required libraries
 import serial
@@ -47,14 +47,13 @@ import logging
 
 
 class Serial3(serial.Serial):
-
     def write(self, cmd):
-        cmd = bytes(cmd.encode('utf-8'))
+        cmd = bytes(cmd.encode("utf-8"))
         super(Serial3, self).write(cmd)
 
     def read(self):
         data = super(Serial3, self).read()
-        return data.decode('utf-8')
+        return data.decode("utf-8")
 
 
 class spid(object):
@@ -82,16 +81,16 @@ class spid(object):
 
     def stop(self):
         out = chr(87) + self.zero5 + self.zero5 + chr(15) + chr(32)
-        x = self.ser.write(out)
+        self.ser.write(out)
         # Wait for answer from controller
         sleep(0.5)
 
         data = self.ser.read()
         # once all 5 characters are received, decode location.
         if len(data) >= 5:
-            s1 = ord(data[1].encode('latin-1'))
-            s2 = ord(data[2].encode('latin-1'))
-            s3 = ord(data[3].encode('latin-1'))
+            s1 = ord(data[1].encode("latin-1"))
+            s2 = ord(data[2].encode("latin-1"))
+            s3 = ord(data[3].encode("latin-1"))
             azs = s1 * 100 + s2 * 10 + s3
             # Since the controller sends the status based on 0 degrees = 360
             # remove the 360 here
@@ -101,16 +100,16 @@ class spid(object):
     def status(self):
         # Build the status command word.
         out = chr(87) + self.zero5 + self.zero5 + chr(31) + chr(32)
-        x = self.ser.write(out)
+        self.ser.write(out)
         # Wait for answer from controller
         sleep(0.5)
 
         data = self.ser.read()
         # once all 5 characters are received, decode location.
         if len(data) >= 5:
-            s1 = ord(data[1].encode('latin-1'))
-            s2 = ord(data[2].encode('latin-1'))
-            s3 = ord(data[3].encode('latin-1'))
+            s1 = ord(data[1].encode("latin-1"))
+            s2 = ord(data[2].encode("latin-1"))
+            s3 = ord(data[3].encode("latin-1"))
             azs = s1 * 100 + s2 * 10 + s3
             # Since the controller sends the status based on 0 degrees = 360
             # remove the 360 here
@@ -118,42 +117,44 @@ class spid(object):
             print(("Rotator currently at %3d " % (azs) + "Degrees"))
 
     def moveto(self, az):
-            # send command to rotator controller to move rotator
-            # to the desired azimuth.
-            az=int(az)
-            # test to see if azimuth is in the range of 0 to 360 Degrees
-            if (az < 0 or az > 360):
-                self.logger.error("Invalid Azimuth")
-                return
-            else:
-                # Convert Azimuth to number required by controller
-                az = az + 360
-                # Build message to be sent to controller
-                out = chr(87) + str(az) + chr(48) + chr(1) + self.zero5 + chr(47) + chr(32)
-                # Send message to Controller
-                x = self.ser.write(out)
+        # send command to rotator controller to move rotator
+        # to the desired azimuth.
+        az = int(az)
+        # test to see if azimuth is in the range of 0 to 360 Degrees
+        if az < 0 or az > 360:
+            self.logger.error("Invalid Azimuth")
+            return
+        else:
+            # Convert Azimuth to number required by controller
+            az = az + 360
+            # Build message to be sent to controller
+            out = chr(87) + str(az) + chr(48) + chr(1) + self.zero5 + chr(47) + chr(32)
+            # Send message to Controller
+            self.ser.write(out)
 
     def __del__(self):
-            self.ser.flushInput()
-            self.ser.flushOutput()
-            self.ser.close()
-            sleep(3)
-            try:
-                if self.ser.is_open():
-                    print("Trying to close for 2nd time")
-                    self.ser.flushInput()
-                    self.ser.flushOutput()
-                    self.ser.close()
-                if self.ser.is_open():
-                    print("Failed to correctly close the serial Port - a machine restart will probably be needed.")
-            except:
-                print('Closing ')
+        self.ser.flushInput()
+        self.ser.flushOutput()
+        self.ser.close()
+        sleep(3)
+        try:
+            if self.ser.is_open():
+                print("Trying to close for 2nd time")
+                self.ser.flushInput()
+                self.ser.flushOutput()
+                self.ser.close()
+            if self.ser.is_open():
+                print(
+                    "Failed to correctly close the serial Port - a machine restart will probably be needed."
+                )
+        except:
+            print("Closing ")
 
 
 if __name__ == "__main__":
     import datetime
-    s=spid()
+
+    s = spid()
     s.moveto(100)
     sleep(4)
     s.moveto(90)
-

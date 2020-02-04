@@ -33,17 +33,17 @@ class K3:
         self.ser.close()
 
     def write(self, str_command: str) -> None:
-        for a in str_command.split(';'):
+        for a in str_command.split(";"):
             self.logger.debug("Sending Data to Serial Port")
-            self.ser.write((a + ';').encode('utf-8'))
+            self.ser.write((a + ";").encode("utf-8"))
             # self.ser.flushInput()
 
     def read(self, bytes_to_read: int) -> str:
         try:
-            return self.ser.read(bytes_to_read).decode('utf-8')
+            return self.ser.read(bytes_to_read).decode("utf-8")
         except:
             self.logger.error("Error Reading data")
-            return ''
+            return ""
 
     #
     # Set the VFO current frequency
@@ -81,7 +81,7 @@ class K3:
         result = self.read(20)
         if len(result) > 15:
             self.logger.debug("result is " + result)
-            hz = result.split(';')[2].replace('FA', '')[0:8]
+            hz = result.split(";")[2].replace("FA", "")[0:8]
             # FA;FA00024893007;
             return hz
         else:
@@ -97,7 +97,7 @@ class K3:
         result = self.read(20)
         if len(result) > 15:
             self.logger.debug("result is " + result)
-            hz = result.split(';')[2].replace('FB', '')[0:8]
+            hz = result.split(";")[2].replace("FB", "")[0:8]
             # FA;FA00024893007;
             return hz
         else:
@@ -192,7 +192,7 @@ class K3:
     # Set the preamp
     # PA0; off
     # PA1; on
-    def pa(self, pre_amp_setting='on') -> str:
+    def pa(self, pre_amp_setting="on") -> str:
         modenum = ""
         if pre_amp_setting.lower() == "off":
             modenum = 0
@@ -264,8 +264,8 @@ class K3:
     # KY text;
     def sendcw_orig(self, cw_text: str) -> None:
         try:
-            for a in cw_text.split(';'):
-                cmd = a + ';'
+            for a in cw_text.split(";"):
+                cmd = a + ";"
                 self.logger.debug("Sending " + cmd)
                 self.write(cmd)
                 self.logger.debug("CW Sent")
@@ -355,7 +355,7 @@ class K3:
         if len(result) != 9:
             return 0
         ver = result[3:8]
-        if ver == '99.99':
+        if ver == "99.99":
             ver = None
         return ver
 
@@ -376,6 +376,32 @@ class K3:
         def k3LcdChar(c):
             return str(chr(ord(c) & 127))
 
+    # TODO this does not work  - the documentation is incomplete. It has no effect and will return True.
+    def set_channel(self, id: int, Name: str, Freq: float) -> bool:
+        """
+        MC (Memory Channel; GET/SET)
+SET/RSP format: MCnnn; where nnn is the memory # (or channel). Regular memories are 000-099. Per-band
+quickmemories: nnn=100+bandNum*4+Mn–1. ForbandNum,seeBN.Mnis1-4,i.e.         tap.
+Notes: (1) A SET is ignored if the target memory is invalid. (2) K3 only: If CONFIG:MEM0-9 = BAND SEL, then memories 000-009 only (“Quick memories”) will recall the last-used VFO frequencies in the target band, not
+fixed frequencies. (3) Switching to any regular memory (000-099) updates the K3’s default         memory
+number; this is not the case when switching to Per-Band Quick memories (         ). (4) Switching to any memory
+tagged with ‘*’ as the first character in its label enables channel-hop scanning (see K3/KX3/KX2 Owner’s manual).
+        :param id:
+        :param Name:
+        :param Freq:
+        :return:
+        """
+        # self.qsy(Freq)
+        # self.write("MC{:03d};".format(id))
+        # result = self.read(3)
+        # if len(result) != 3:
+        #     return False
+        return True
+
+    def use_channel(self, id: int) -> int:
+        self.write("MC{:03d};".format(id))
+        return True
+
 
 if __name__ == "__main__":
     import sys
@@ -385,39 +411,39 @@ if __name__ == "__main__":
     if testmode == 1:
         print("testing K3")
         print("What Mode")
-        print('' + rig.modeq())
+        print("" + rig.modeq())
         print("Check PreAmp")
-        print('' + rig.paq())
+        print("" + rig.paq())
         print("PreAmp on")
-        print('' + rig.pa("on"))
+        print("" + rig.pa("on"))
         print("VFO-A")
-        print('' + rig.qsyq())
+        print("" + rig.qsyq())
         print("VFO-B")
-        print('' + rig.qsyq2())
+        print("" + rig.qsyq2())
         print("FIQ")
-        print('' + rig.fiq())
+        print("" + rig.fiq())
         print("Noise Blocker-A")
-        print('' + rig.nbq())
+        print("" + rig.nbq())
         print("Mode")
-        print('' + rig.modeq())
+        print("" + rig.modeq())
         print("Pre Amp")
-        print('' + rig.paq())
+        print("" + rig.paq())
         print("Power Settings")
-        print('' + rig.powerq())
+        print("" + rig.powerq())
         print("VFO")
-        print('' + rig.vfoq())
+        print("" + rig.vfoq())
         print("CW Speed")
-        print('' + rig.cwspeedq())
+        print("" + rig.cwspeedq())
         print("RA ")
-        print('' + rig.raq())
+        print("" + rig.raq())
         print("Filter")
-        print('' + rig.filterq())
+        print("" + rig.filterq())
         print("Display")
-        print('' + rig.displayq())
+        print("" + rig.displayq())
         # print("Ver")
         # print('' + rig.verq(, x))
         print("Time")
-        print('' + rig.timeq())
+        print("" + rig.timeq())
         print("Tests Finished")
     elif testmode == 0:
         rig.modeq()
@@ -429,5 +455,9 @@ if __name__ == "__main__":
         print("Done")
     elif testmode == 3:
         #        print(''+rig.modeq(),end='\n')
-        print('' + rig.qsyq(), end='\n')
+        print("" + rig.qsyq(), end="\n")
         print("Done")
+    elif testmode == 4:
+        print("Set Memory")
+        status = rig.use_channel(2)
+        print(" Worked") if status else print("Failed")

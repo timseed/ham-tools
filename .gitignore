@@ -116,13 +116,13 @@ DX.txt
 Evt/
 Gui/
 ham/calc/bearing.py
-call_subproc1.py
+unused/call_subproc1.py
 cty-2604/
 cty.dat
 dxcc.py
 dxcc/
-dxspider.py
-ham.sh
+unused/dxspider.py
+unused/ham.sh
 ham/.DS_Store
 ham/dxcc/data/
 Would skip repository ham/kpa500/
@@ -133,13 +133,13 @@ info_loopq.py
 map/
 map2/
 rbn.py
-s.py
-spid3.py
-spid_rotator.py
-spid_rotator.py.bak
-subproc2.py
-subproc3.py
-t.txt
-test.yaml
+unused/s.py
+unused/spid3.py
+unused/spid_rotator.py
+unused/spid_rotator.py.bak
+unused/subproc2.py
+unused/subproc3.py
+unused/t.txt
+unused/test.yaml
 Would skip repository txtlib/
 wind_force.py

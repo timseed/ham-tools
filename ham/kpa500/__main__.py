@@ -3,12 +3,13 @@ import logging
 import logging.config
 from time import sleep
 import pprint
+from ham.kpa500 import Kpa500
 
-with open('logging.yaml', 'rt') as f:
+with open("logging.yaml", "rt") as f:
     config = yaml.safe_load(f.read())
     logging.config.dictConfig(config)
     log = logging.getLogger(__name__)
-    linear = kpa500cls('config.yaml')
+    linear = Kpa500("config.yaml")
     # linear.setBand()
     # sleep(1)
     # linear.get('^BN;','Band Mode')
@@ -20,8 +21,7 @@ with open('logging.yaml', 'rt') as f:
     print("======RW=====")
     t = []
     for k in linear.cmd.keys():
-        if linear.cmd[k]['RW'] == True:
+        if linear.cmd[k]["RW"] == True:
             t.append(k)
     pprint.pprint(t)
     print("Keys with True are {}".format(len(t)))
-
