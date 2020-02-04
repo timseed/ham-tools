@@ -8,10 +8,8 @@ VIRTUALENVWRAPPER_SCRIPT = source ~\pe38\bin\activate
 
 all :build install 
 
-
 build:
 	python setup.py sdist
-
 
 check:
 	$(PYTHON) -m pylint -E            $(PYSRC)
@@ -21,13 +19,11 @@ check:
 format:
 	$(PYTHON) -m black $(PYSRC)
 
-
 test:
 	$(PYTHON) -m pytest $(PYTST)
 
 coverage:
 	pytest --cov=$(PYSRC)
-
 
 install:
 	pip install dist/$$(ls -asl dist | tail  -n 1 | perl -lane \'print $F[9]\')
@@ -39,4 +35,3 @@ install:
 fullcheck:
 	$(MAKE) check
 	$(MAKE) test
-
