@@ -1,5 +1,6 @@
 from __future__ import division
 from datetime import datetime
+from typing import Tuple
 from math import sin, cos, atan2, sqrt, radians, degrees
 import logging
 import ephem
@@ -68,7 +69,7 @@ class Locator(object):
         return locator_str
 
     @staticmethod
-    def locator_to_latlong(locator_str):
+    def locator_to_latlong(locator_str) -> Tuple[float, float]:
         """
             converts Maidenhead locator in the corresponding WGS84 coordinates
 
@@ -128,7 +129,7 @@ class Locator(object):
             longitude += ((ord(locator_str[4])) - ord("A")) * (2 / 24)
             latitude += ((ord(locator_str[5])) - ord("A")) * (1 / 24)
 
-            # move to center of subsquare
+            # move to center of sub-square
             longitude += 1 / 24
             latitude += 0.5 / 24
 
