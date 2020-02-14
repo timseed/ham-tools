@@ -12,7 +12,6 @@ class TestCalcLocator(TestCase):
 
         self.loc = Locator()
 
-
     def test_loc_manila(self):
         """
         Basic Lat Lon

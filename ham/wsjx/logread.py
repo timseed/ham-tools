@@ -32,15 +32,17 @@ class WsjXQso:
     @property
     def __geo_interface__(self):
 
-        return str({
-            'type': 'Feature',
-            'properties': {
-                'name': self.call,
-                'band': self.band,
-                'popupContent': '{self.call} on {self.band}',
-            },
-            'geometry': {'type': 'Point', 'coordinates': [{self.lat}, {self.lon}]},
-        })
+        return str(
+            {
+                "type": "Feature",
+                "properties": {
+                    "name": self.call,
+                    "band": self.band,
+                    "popupContent": "{self.call} on {self.band}",
+                },
+                "geometry": {"type": "Point", "coordinates": [{self.lat}, {self.lon}]},
+            }
+        )
 
 
 class LogRead:
@@ -104,15 +106,16 @@ class LogRead:
 
     def dump_geo(self):
         my_lat, my_lon = Locator.locator_to_latlong(self.my_qra)
-        return FeatureCollection([LineString([(my_lon, my_lat),(q.lon, q.lat)],
-                                             properties={'band':q.band}) for q in self.qso])
+        return FeatureCollection(
+            [
+                LineString(
+                    [(my_lon, my_lat), (q.lon, q.lat)],
+                    properties={"band": q.band, "call": q.call, "when": q.when.hour},
+                )
+                for q in self.qso
+            ]
+        )
 
     def dump_geo_to_file(self, filename: str = "MySpots.json"):
         with open(filename, "wt") as geoJsonFile:
-            json.dump(lr.dump_geo(), geoJsonFile)
-
-
-if __name__ == "__main__":
-    lr = LogRead(my_qra='PK05je')
-    lr.dump_geo_to_file()
-    print("done")
+            json.dump(self.dump_geo(), geoJsonFile)

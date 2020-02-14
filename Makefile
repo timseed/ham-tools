@@ -6,7 +6,7 @@ PYSRC = ham
 PYTST = ham/tests
 VIRTUALENVWRAPPER_SCRIPT = source ~\pe38\bin\activate
 
-all :build install 
+all : check test build install 
 
 build:
 	python setup.py sdist
@@ -26,12 +26,6 @@ coverage:
 	pytest --cov=$(PYSRC)
 
 install:
-	pip install dist/$$(ls -asl dist | tail  -n 1 | perl -lane \'print $F[9]\')
-	#pip install dist/$$(ls -s -c dist | grep -v total  | cut -d ' ' -f 2 | head -n 1 )
+	pip install $$(ls -tr dist/*.gz | tail -1 )
 
-.DEFAULT_GOAL := fullcheck
-#Check all is formatted
-#Passes tests
-fullcheck:
-	$(MAKE) check
-	$(MAKE) test
+.DEFAULT_GOAL := all 

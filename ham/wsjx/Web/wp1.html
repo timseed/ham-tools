@@ -11,13 +11,36 @@
   </style>
 </head>
 <body>
+<div id="time">
+  <h5>Put something here</h5>
+  <select id="example-select"></select>
+  <script type="application/javascript">
+
+  var example_array = {
+    Value80 : 'Night ',
+    ValueB : 'Sunrise ',
+    ValueC : 'Morning',
+    ValueD : 'Noon',
+    ValueE : 'Afternoon',
+    ValueF : 'SunSet',
+  };
+
+  var select = document.getElementById("example-select");
+  for(index in example_array) {
+    select.options[select.options.length] = new Option(example_array[index], index);
+  }
+  </script>
+</div>
 
 <div id="map"></div>
 
 <script  type="text/javascript">
 
   // initialize the map
-  var map = L.map('map').setView([15.20, 120.78], 13);
+  var map = L.map('map', {
+    center: [15.20, 120.78],
+    zoom: 1,
+  })
 
   // load a tile layer
   L.tileLayer('https://a.tile.openstreetmap.org//{z}/{x}/{y}.png',
