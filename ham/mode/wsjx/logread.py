@@ -36,18 +36,14 @@ class TOD(Enum):
 
 class TimeOfDay:
 
-    def calc_tod(self,date_time_dict, time_of_qso) -> TOD:
+    def calc_tod(self,date_time_dict, time_of_qso) -> str:
         """
         With 4 values in dictionary we should be able to determine when the TOD is.
         :param date_time_dict:
         :param time_of_qso:
         :return:
         """
-
-
-
-
-        return TOD.SUNSET
+        return str(TOD.SUNSET)
 
 
 
@@ -55,6 +51,7 @@ class TimeOfDay:
 @dataclass
 class WsjXQso:
     when: datetime
+    timeofday: str
     band: int
     call: str
     grid: str
@@ -91,9 +88,11 @@ class LogRead:
         """
         self.filename = filename
         self.my_qra = my_qra
+        self.band = HamBand()
         self.tz=tz
         self.qso = []
         self.process()
+        self.tod=TimeOfDay()
 
     def process(self):
         """
@@ -127,8 +126,8 @@ class LogRead:
                         self.qso.append(
                             WsjXQso(
                                 when=whn,
-                                time_of_day=self.tod()
-                                band=band.khz_to_m(1000.0 * float(parts[5])),
+                                timeofday=self.tod.calc_tod({},whn),
+                                band=self.band.khz_to_m(1000.0 * float(parts[5])),
                                 call=parts[6],
                                 grid=parts[7] + "LM",
                                 lat=aprox_lat,

@@ -1,4 +1,4 @@
-from ham.wsjx import LogRead
+from ham.mode.wsjx import LogRead
 
 if __name__ == "__main__":
     lr = LogRead(my_qra="PK05je")
