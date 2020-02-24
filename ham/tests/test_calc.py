@@ -1,5 +1,6 @@
 from unittest import TestCase
-
+from datetime import datetime
+import pytz
 from ham.calc import Locator, WindForce
 
 
@@ -59,6 +60,24 @@ class TestCalcLocator(TestCase):
         long_path_bearing = self.loc.calculate_heading_longpath(mct_grid, tele_grid)
         self.assertEqual(short_path_bearing, 85.70847922042742)
         self.assertEqual(long_path_bearing, 265.7084792204274)
+
+    def test_sunrise(self):
+        sun_times = self.loc.calculate_sunrise_sunset(
+            "PK05lm", calc_date=datetime(2020, 2, 14, 2, 2, 2)
+        )
+        self.assertEqual(
+            sun_times,
+            {
+                "evening_dawn": datetime(
+                    2020, 2, 14, 9, 59, 16, 330165, tzinfo=pytz.UTC
+                ),
+                "morning_dawn": datetime(
+                    2020, 2, 14, 21, 58, 50, 310771, tzinfo=pytz.UTC
+                ),
+                "sunrise": datetime(2020, 2, 14, 22, 21, 10, 881949, tzinfo=pytz.UTC),
+                "sunset": datetime(2020, 2, 14, 10, 21, 38, 521531, tzinfo=pytz.UTC),
+            },
+        )
 
 
 class TestWindForce(TestCase):

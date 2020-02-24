@@ -3,8 +3,10 @@ from datetime import datetime
 from pprint import pprint
 from ham.calc import Locator
 from ham.band import HamBand
-from geojson import Feature, Point, FeatureCollection, LineString
+import pytz
+from geojson import FeatureCollection, LineString
 import json
+from enum import Enum
 
 """
 Convert my WSJX Log file into Geo Json.
@@ -18,6 +20,36 @@ Suggested Useage
     
 This will output MySpots.json, please alter the input filename... to suit.
 """
+
+
+class TOD(Enum):
+    """
+    Abstration of the Time of Day.
+    """
+    NIGHT   = 1
+    SUNRISE = 2
+    MORNING = 3
+    NOON    = 4
+    AFTERNOON = 5
+    SUNSET = 6
+
+
+class TimeOfDay:
+
+    def calc_tod(self,date_time_dict, time_of_qso) -> TOD:
+        """
+        With 4 values in dictionary we should be able to determine when the TOD is.
+        :param date_time_dict:
+        :param time_of_qso:
+        :return:
+        """
+
+
+
+
+        return TOD.SUNSET
+
+
 
 
 @dataclass
@@ -50,13 +82,16 @@ class LogRead:
         self,
         my_qra: str = "PK05je",
         filename: str = "/Users/tim/Library/Application Support/WSJT-X/ALL_WSPR.TXT",
+        tz="Asia/Manila"
     ):
         """
         Initialize the class.
         :param filename: Filename of the Log file
+        :param tz: The Timezone of your location.
         """
         self.filename = filename
         self.my_qra = my_qra
+        self.tz=tz
         self.qso = []
         self.process()
 
@@ -84,13 +119,15 @@ class LogRead:
                 if len(parts) == 15:
                     # Ignore the Tx Lines
                     try:
-                        whn = datetime.strptime(f"20{parts[0]}{parts[1]}", "%Y%m%d%H%M")
+                        whn_noutc = datetime.strptime(f"20{parts[0]}{parts[1]}", "%Y%m%d%H%M")
+                        whn = whn_noutc.replace(tzinfo=pytz.UTC)
                         aprox_lat, aprox_lon = Locator.locator_to_latlong(
                             parts[7] + "LM"
                         )
                         self.qso.append(
                             WsjXQso(
                                 when=whn,
+                                time_of_day=self.tod()
                                 band=band.khz_to_m(1000.0 * float(parts[5])),
                                 call=parts[6],
                                 grid=parts[7] + "LM",
