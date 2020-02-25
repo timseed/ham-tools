@@ -136,7 +136,7 @@ class LogRead:
                             ft8Qso(
                                 when=whn,
                                 timeofday="unk",
-                                band=self.band.khz_to_m(float(parts[5])/10.0),
+                                band=self.band.khz_to_m(float(parts[5])/1000.0),
                                 call=parts[6],
                                 grid=parts[7] + "LM",
                                 lat=aprox_lat,
