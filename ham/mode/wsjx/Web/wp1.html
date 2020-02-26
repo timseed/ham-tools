@@ -1,87 +1,151 @@
-
 <html>
 <head>
-  <title>A Leaflet map!</title>
-  <link rel="stylesheet" href="./Leaflet/leaflet.css"/>
-  <script type="text/javascript" src="./Leaflet/leaflet.js"></script>
-  <script type="text/javascript" src="jquery.js"></script>
+    <title>A Leaflet map!</title>
+    <link rel="stylesheet" href="./Leaflet/leaflet.css"/>
+    <script type="text/javascript" src="./Leaflet/leaflet.js"></script>
+    <script type="text/javascript" src="jquery.js"></script>
 
-  <style>
-    #map{ height: 100% }
-  </style>
+    <style>
+        #map {
+            height: 100%
+        }
+    </style>
 </head>
 <body>
 <div id="time">
-  <h5>Put something here</h5>
-  <select id="example-select"></select>
-  <script type="application/javascript">
+    <h5>Put something here</h5>
+    <select id="example-select"></select>
+    <script type="application/javascript">
 
-  var example_array = {
-    Value80 : 'Night ',
-    ValueB : 'Sunrise ',
-    ValueC : 'Morning',
-    ValueD : 'Noon',
-    ValueE : 'Afternoon',
-    ValueF : 'SunSet',
-  };
+        var example_array = {
+            Value80: 'Night ',
+            ValueB: 'Sunrise ',
+            ValueC: 'Morning',
+            ValueD: 'Noon',
+            ValueE: 'Afternoon',
+            ValueF: 'SunSet',
+        };
 
-  var select = document.getElementById("example-select");
-  for(index in example_array) {
-    select.options[select.options.length] = new Option(example_array[index], index);
-  }
-  </script>
+        var select = document.getElementById("example-select");
+        for (index in example_array) {
+            select.options[select.options.length] = new Option(example_array[index], index);
+        }
+    </script>
 </div>
 
 <div id="map"></div>
 
-<script  type="text/javascript">
+<script type="text/javascript">
 
-  // initialize the map
-  var map = L.map('map', {
-    center: [15.20, 120.78],
-    zoom: 1,
-  })
 
-  // load a tile layer
-  L.tileLayer('https://a.tile.openstreetmap.org//{z}/{x}/{y}.png',
-          {
+    var map = L.map('map', {
+        center: [15.20, 120.78],
+        zoom: 1,
+    })
+
+    // load a tile layer
+    L.tileLayer('https://a.tile.openstreetmap.org//{z}/{x}/{y}.png',
+        {
             attribution: 'Tiles by',
             maxZoom: 10,
             minZoom: 1
-          }).addTo(map);
+        }).addTo(map);
 
 
-  // load GeoJSON from an external file
+    // load GeoJSON from an external file
 
 
-  $.getJSON("Myft8Spots.json",function(data){
-    // add GeoJSON layer to the map once the file is loaded
-    L.geoJson(data,  {
-      style: function(LineString) {
-        switch (LineString.geometry.properties.band) {
-          case 80:
-            return {color: "#F001E1"};
-          case 40:
-            return {color: "#EF63F0"};
-          case 20:
-            return {color: "#ff0000"};
-          case 18:
-            return {color: "#ffff00"};
-          case 15:
-            return {color: "#ffffdd"}
-          case 12:
-            return {color: "#66FCFF"};
-          case 10:
-            return {color: "#FFFFFF"};
+    // $.getJSON("Myft8Spots.json",function(data){
+    //   // add GeoJSON layer to the map once the file is loaded
+    //   L.geoJson(data,  {
+    //     style: function(LineString) {
+    //       switch (LineString.geometry.properties.band) {
+    //         case 80:
+    //           return {color: "#F001E1"};
+    //         case 40:
+    //           return {color: "#EF63F0"};
+    //         case 20:
+    //           return {color: "#ff0000"};
+    //         case 18:
+    //           return {color: "#ffff00"};
+    //         case 15:
+    //           return {color: "#333333"}
+    //         case 12:
+    //           return {color: "#66FCFF"};
+    //         case 10:
+    //           return {color: "#FFFFFF"};
+    //         // default:
+    //         //   console.log(data)
+    //       }
+    //     }
+    //     }).addTo(map);
+    // });
+    console.log("Hi");
+    ft8data = $.getJSON("Myft8Spots.json");
+    // L.geoJSON(ft8data, {
+    //     style: function (feature) {
+    //         return {color: feature.properties.color};
+    //     }
+    // }).bindPopup(function (layer) {
+    //     return layer.feature.properties.description;
+    // }).addTo(map);
+    console.log(ft8data);
+    // , {
+    //
+    //   coordsToLatLng: function (feature, obj) {
+    //       console.log(obj);
+    //       return L.latLng(features.coordinates[1]);
+    //   }
+    // });
 
+    items = $.getJSON("Myft8Spots.json", function (data) {
+        var items = [];
+        $.each(data, function (key, val) {
+            items.push("<li id='" + key + "'>" + val + "</li>");
+            return items;
+        })
+    });
 
-          // default:
-          //   console.log(data)
-        }
-      }
-      }).addTo(map);
-  });
+    console.log("items");
+    items2 = $.getJSON("Myft8Spots.json");
+    console.log(items2);
+    // items2.responseFeatureGroup.features.forEach(myFunction);
+    function myFunction(item, index)
+    {
+        console.log(item);
+    }
 
+    // {
+    //     var items=[]
+    //     console.log(data);
+    //     index = 0;
+    //     data.FeatureGroup.features.forEach(myFunction);
+    //     function myFunction(item, index)
+    //     {
+    //         console.log(item);
+    //     }
+    //     // $.each(data.FeatureGroup.features, function(i, item) {
+    //     //     console.log(i);
+    //     //     items.push(L.latLng(data[i].coordinates[1]));
+    //     // return items;
+    //     });
+    // });
+
+    console.log(items2);
+    console.log("items end");
+    var ll = L.latLng(50.5, 30.5);
+    console.log(ll);
+
+    //console.log(ft8data);
+    // pantryLayer = new L.geoJSON(pantriesData,{
+    //                     pointToLayer: function (feature, latlng) {
+    //                      return L.marker(latlng, {icon: pantriesIcon});
+    //                     },
+    //                     onEachFeature: pantriesOnEachFeature
+    //                   }
+    //                );
+    //
+    //               pantryLayer.addTo(map);
 </script>
 </body>
 </html>

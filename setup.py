@@ -4,9 +4,9 @@ requirements = 'ephem', 'pyserial', 'pyyaml', 'geojson'
 
 setup(
     name='ham',
-    version='1.0.2b',
+    version='1.0.3',
     packages=['ham', 'ham.rbn', 'ham.adif', 'ham.band', 'ham.calc', 'ham.dxcc',  'ham.tests',
-              'ham.beacon',  'ham.qsosvr', 'ham.telnet', 'ham.equipment', 'ham.wsjx'],
+              'ham.beacon',  'ham.qsosvr', 'ham.telnet', 'ham.equipment', 'ham.mode'],
     url='',
     license='Public',
     author='tim',

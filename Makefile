@@ -1,15 +1,24 @@
 .DEFAULT_GOAL := all
 
-PYTHON = python3
-COV = coverage
 PYSRC = ham
-PYTST = ham/tests
-VIRTUALENVWRAPPER_SCRIPT = source ~\pe38\bin\activate
+PYTEST = ham/tests
+
+
+VENV_NAME?=pe38
+VENV_ACTIVATE=. ~/$(VENV_NAME)/bin/activate
+PYTHON=~/${VENV_NAME}/bin/python3
+PIP = pip3
+PYCOV = $(PYTHON) -m coverage
+Package = ham-1.0.3.tar.gz
+
+
 
 all : check test build install 
 
+.phony build:
 build:
 	python setup.py sdist
+	-$(PIP) install "./dist/$(Package)"
 
 check:
 	$(PYTHON) -m pylint -E            $(PYSRC)

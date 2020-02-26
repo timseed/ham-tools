@@ -135,6 +135,7 @@ class LogRead:
                         self.qso.append(
                             ft8Qso(
                                 when=whn,
+                                # ToDO timeofday
                                 timeofday="unk",
                                 band=self.band.khz_to_m(float(parts[5])/1000.0),
                                 call=parts[6],

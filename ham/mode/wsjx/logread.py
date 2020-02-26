@@ -126,7 +126,8 @@ class LogRead:
                         self.qso.append(
                             WsjXQso(
                                 when=whn,
-                                timeofday=self.tod.calc_tod({},whn),
+                                timeofday="unk",
+                                # ToDO timeofday
                                 band=self.band.khz_to_m(1000.0 * float(parts[5])),
                                 call=parts[6],
                                 grid=parts[7] + "LM",
