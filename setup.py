@@ -1,13 +1,12 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 requirements = 'ephem', 'pyserial', 'pyyaml', 'geojson'
 
 setup(
     name='ham',
     version='1.0.3',
-    packages=['ham', 'ham.rbn', 'ham.adif', 'ham.band', 'ham.calc', 'ham.dxcc',  'ham.tests',
-              'ham.beacon',  'ham.qsosvr', 'ham.telnet', 'ham.equipment', 'ham.mode',
-              'ham.mode.wsjx', 'ham.mode.ft8'],
+    packages=find_packages(),
+    include_package_data=True, #Uses Manifest.IN
     url='',
     license='Public',
     author='tim',

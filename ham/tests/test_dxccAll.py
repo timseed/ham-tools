@@ -38,3 +38,8 @@ class TestDxccAll(TestCase):
         self.assertIsNotNone(self.dxcc_all.find("A45WG"))
         self.assertIsNotNone(self.dxcc_all.find("DU3TIM"))
         self.assertIsNotNone(self.dxcc_all.find("DU3TIM"))
+
+    def test_country_name(self):
+        self.assertEqual(self.dxcc_all.find("M0FGC").Country_Name, "England")
+        self.assertEqual(self.dxcc_all.find("DU20FGC").Country_Name, "Philippines")
+        self.assertEqual(self.dxcc_all.find("F0FGC").Country_Name, "France")

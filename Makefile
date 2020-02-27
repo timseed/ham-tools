@@ -11,14 +11,22 @@ PIP = pip3
 PYCOV = $(PYTHON) -m coverage
 Package = ham-1.0.3.tar.gz
 
+objects := $(patsubst %.py,$(Package).tar.gz,$(wildcard *.py))
+
+all : test build install
+
+# Requirements are in setup.py, so whenever setup.py is changed, re-run installation of dependencies.
+venv: $(VENV_NAME)/bin/activate
+$(VENV_NAME)/bin/activate: setup.py
+	test -d $(VENV_NAME) || virtualenv -p python3 $(VENV_NAME)
+	${PYTHON} -m pip install -U pip
+	${PYTHON} -m pip install -e .
+	touch $(VENV_NAME)/bin/activate
 
 
-all : check test build install 
-
-.phony build:
-build:
-	python setup.py sdist
-	-$(PIP) install "./dist/$(Package)"
+.PHONY build:
+build: .dist/$(Package)
+	$(PYTHON) setup.py sdist
 
 check:
 	$(PYTHON) -m pylint -E            $(PYSRC)
