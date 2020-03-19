@@ -18,7 +18,9 @@ class DxccAll(object):
         self._dxcc_list = {}
         self.logger = logging.getLogger(__name__)
         formatter = logging.Formatter(
-            '[%(asctime)s] p%(process)s {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s', '%m-%d %H:%M:%S')
+            "[%(asctime)s] p%(process)s {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s",
+            "%m-%d %H:%M:%S",
+        )
         self.read()
 
     # TODO this needs writing
@@ -29,7 +31,7 @@ class DxccAll(object):
         """
         return True
 
-    def correctdata(self, prefix: str, dx_rec: str):
+    def correctdata(self, prefix: str, dx_rec: list):
         """
         (#)	Override CQ Zone
         [#]	Override ITU Zone
@@ -45,43 +47,45 @@ class DxccAll(object):
         :return: prefix, DxRec
         """
 
-        prefix = prefix.replace(' ', '')
+        prefix = prefix.replace(" ", "")
         m = re.search("[^A-Za-z0-9]", prefix)
         if m is not None:
-            if prefix.startswith('='):
+            if prefix.startswith("="):
                 self.logger.debug("Specific Call")
-                prefix = prefix.replace('=', '')
+                prefix = prefix.replace("=", "")
             m_cq = re.search("([(][0-9]+[)])", prefix)
             if m_cq is not None:
                 # CQ Zone Change
                 new_cq_zone = m_cq.groups(0)[0]
                 self.logger(str.format("{} has CQZone Change {}", prefix, new_cq_zone))
-                prefix = prefix.replace(new_cq_zone, '')
-                new_cq_zone = new_cq_zone.replace('(', '').replace(')', '')
+                prefix = prefix.replace(new_cq_zone, "")
+                new_cq_zone = new_cq_zone.replace("(", "").replace(")", "")
                 # Make new tuple
                 #
                 x = (new_cq_zone,)
-                dx_rec = (dx_rec[:1] + x + dx_rec[2:])
+                dx_rec = dx_rec[:1] + x + dx_rec[2:]
             m_itu = re.search(r"(\[[0-9]+\])", prefix)
             if m_itu is not None:
                 new_itu_zone = m_itu.groups(0)[0]
-                self.logger.debug(str.format("{} has ITU Change {}", prefix, new_itu_zone))
-                prefix = prefix.replace(new_itu_zone, '')
-                new_itu_zone = new_itu_zone.replace('[', '').replace(']', '')
+                self.logger.debug(
+                    str.format("{} has ITU Change {}", prefix, new_itu_zone)
+                )
+                prefix = prefix.replace(new_itu_zone, "")
+                new_itu_zone = new_itu_zone.replace("[", "").replace("]", "")
                 # Make new tuple
                 #
-                x = (new_itu_zone,)
-                dx_rec = (dx_rec[:2] + x + dx_rec[3:])
-            m_cont = re.search(r'({[0-9]+})', prefix)
+                x = str(new_itu_zone,)
+                dx_rec = dx_rec[:2] + x + dx_rec[3:]
+            m_cont = re.search(r"({[0-9]+})", prefix)
             if m_cont is not None:
-                new_cont = m_cont.groups(0)[0]
+                new_cont = str(m_cont.groups(0)[0])
                 self.logger.debug(str.format("{} has ITU Change {}", prefix, new_cont))
-                prefix = prefix.replace(new_cont, '')
-                new_cont = new_cont.replace('{', '').replace('}', '')
+                prefix = prefix.replace(new_cont, "")
+                new_cont = new_cont.replace("{", "").replace("}", "")
                 # Make new tuple
                 #
                 x = str(new_cont,)
-                dx_rec = (dx_rec[:3] + x + dx_rec[4:])
+                dx_rec = dx_rec[:3] + x + dx_rec[4:]
 
         return prefix, dx_rec
 
@@ -94,29 +98,40 @@ class DxccAll(object):
         self._dxcc_list = {}
         wanted_file = ""
         try:
-            wanted_file = os.path.join(os.path.dirname(ham.dxcc.__file__),'data')+"/cty.dat"
+            wanted_file = (
+                os.path.join(os.path.dirname(ham.dxcc.__file__), "data") + "/cty.dat"
+            )
             logging.debug(f"want to open {wanted_file}")
             print(f"want to open {wanted_file}")
             txt = open(wanted_file).read()
             logging.debug("file opened")
-            element = txt.split(';')
+            element = txt.split(";")
             for e in element:
                 if len(e) > 10:  # Min string size
                     try:
-                        parts = tuple([a.rstrip(' ').lstrip(' ').replace('\n', '') for a in e.split(':')])
-                        prefix = str(parts[8]).rstrip(' ').lstrip(' ')
-                        for p in prefix.split(','):
+                        parts = tuple(
+                            [
+                                a.rstrip(" ").lstrip(" ").replace("\n", "")
+                                for a in e.split(":")
+                            ]
+                        )
+                        prefix = str(parts[8]).rstrip(" ").lstrip(" ")
+                        for p in prefix.split(","):
                             try:
-                                tmp_parts = str(parts[0:7])
-                                clean_prefix, tmp_parts_2 = self.correctdata(p, tmp_parts)
-                                d = Dxcc(call_starts=clean_prefix,
-                                         country_name=tmp_parts_2[0],
-                                         cq_zone=tmp_parts_2[1],
-                                         itu_zone=tmp_parts_2[2],
-                                         continent_abbreviation=tmp_parts_2[3],
-                                         latitude=float(tmp_parts_2[4]),
-                                         longitude=float(tmp_parts_2[5]),
-                                         local_time_offset=float(tmp_parts_2[6]))
+                                tmp_parts = parts[0:7]
+                                clean_prefix, tmp_parts_2 = self.correctdata(
+                                    p, tmp_parts
+                                )
+                                d = Dxcc(
+                                    call_starts=clean_prefix,
+                                    country_name=tmp_parts_2[0],
+                                    cq_zone=tmp_parts_2[1],
+                                    itu_zone=tmp_parts_2[2],
+                                    continent_abbreviation=tmp_parts_2[3],
+                                    latitude=float(tmp_parts_2[4]),
+                                    longitude=float(tmp_parts_2[5]),
+                                    local_time_offset=float(tmp_parts_2[6]),
+                                )
 
                                 self._dxcc_list[clean_prefix] = d
                                 # self.logger.debug("Array has ", str(len(self._dxcc_list)))
@@ -163,9 +178,9 @@ class DxccAll(object):
         :return:
 
         """
-        cs = '/'.join(sorted(call.upper().split('/'), key=len, reverse=True))
+        cs = "/".join(sorted(call.upper().split("/"), key=len, reverse=True))
 
-        cnt = cs.count('/')
+        cnt = cs.count("/")
         if cnt == 0:
             # No /'s
             return cs
@@ -175,7 +190,7 @@ class DxccAll(object):
             help = 1
             return None
 
-    def find(self, call: object) -> Dxcc:
+    def find(self, call: str) -> Dxcc:
         """
         Find the Country to a call sign
         Get all prefixes - sort by the length of the string - and then iterate LONGEST prefix first.
@@ -207,5 +222,5 @@ class DxccAll(object):
         List of all Countries (not Prefixes) i.e. DU1,DU2,DU3 are just 1 Country.
         :return: List of All Country Names
         """
-        countrynames=[self._dxcc_list[k].country_name for k in self._dxcc_list.keys()]
+        countrynames = [self._dxcc_list[k].country_name for k in self._dxcc_list.keys()]
         return list(set(countrynames)).sort()

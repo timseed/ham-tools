@@ -4,9 +4,17 @@ import re
 
 
 class Dxcc(object):
-
-    def __init__(self, call_starts, country_name, cq_zone, itu_zone, continent_abbreviation, latitude, longitude,
-                 local_time_offset):
+    def __init__(
+        self,
+        call_starts,
+        country_name,
+        cq_zone,
+        itu_zone,
+        continent_abbreviation,
+        latitude,
+        longitude,
+        local_time_offset,
+    ):
         """
         Create a Country - note this is using the CallSign Prefix
         :param call_starts:
@@ -31,26 +39,31 @@ class Dxcc(object):
 
     def show(self):
         print(
-            str.format('Country {}:\n\tCQ\t{}\n\tITU\t{}\n\tAbbv\t{}\n\t\tPos\n\t\t\tLat\t{}\n\t\t\tLon\t{}\n\tTZ\t{}',
-                       self._Country_Name,
-                       self._CQ_Zone,
-                       self._ITU_Zone,
-                       self._continent_abbreviation,
-                       self._Latitude,
-                       self._Longitude,
-                       self._Local_time_offset
-                       ))
+            str.format(
+                "Country {}:\n\tCQ\t{}\n\tITU\t{}\n\tAbbv\t{}\n\t\tPos\n\t\t\tLat\t{}\n\t\t\tLon\t{}\n\tTZ\t{}",
+                self._Country_Name,
+                self._CQ_Zone,
+                self._ITU_Zone,
+                self._continent_abbreviation,
+                self._Latitude,
+                self._Longitude,
+                self._Local_time_offset,
+            )
+        )
 
     def dump(self):
-        return str.format('Country {}:\n\tCQ\t{}\n\tITU\t{}\n\tAbbv\t{}\n\t\tPos\n\t\t\tLat\t{}\n\t\t\tLon\t{'
-                          '}\n\tTZ\t{}',
-                          self._Country_Name,
-                          self._CQ_Zone,
-                          self._ITU_Zone,
-                          self._continent_abbreviation,
-                          self._Latitude,
-                          self._Longitude,
-                          self._Local_time_offset)
+        return str.format(
+            "Country {}:\n\tCQ\t{}\n\tITU\t{}\n\tAbbv\t{}\n\t\tPos\n\t\t\tLat\t{}\n\t\t\tLon\t{"
+            "}\n\tTZ\t{}",
+            self._Country_Name,
+            self._CQ_Zone,
+            self._ITU_Zone,
+            self._continent_abbreviation,
+            self._Latitude,
+            self._Longitude,
+            self._Local_time_offset,
+        )
+
     @property
     def Country_Name(self):
         return self._Country_Name
@@ -78,4 +91,3 @@ class Dxcc(object):
     @property
     def Local_time_offset(self):
         return self._Local_time_offset
-
