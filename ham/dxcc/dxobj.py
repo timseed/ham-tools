@@ -3,7 +3,7 @@ import os
 import re
 
 
-class Dxcc(object):
+class DxObj(object):
     def __init__(
         self,
         call_starts,

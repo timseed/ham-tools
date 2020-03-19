@@ -1,11 +1,11 @@
 from unittest import TestCase
 from ham.calc import Locator
-from ham.dxcc import Dxcc, DxccAll
+from ham.dxcc import DxObj, DxccAll
 
 
 class TestDxccAll(TestCase):
     def setUp(self):
-        self.dxcc = Dxcc("A4", "Oman", 23, 13, "As", 21.1, 58.2, 4.0)
+        self.dxcc = DxObj("A4", "Oman", 23, 13, "As", 21.1, 58.2, 4.0)
         self.loc = Locator()
         self.assertTrue(self.dxcc)
 

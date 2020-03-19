@@ -2,7 +2,7 @@ import logging
 import os
 import re
 import ham.dxcc
-from ham.dxcc.dxcc_country import Dxcc
+from ham.dxcc.dxobj import DxObj
 from typing import Optional
 
 
@@ -122,7 +122,7 @@ class DxccAll(object):
                                 clean_prefix, tmp_parts_2 = self.correctdata(
                                     p, tmp_parts
                                 )
-                                d = Dxcc(
+                                d = DxObj(
                                     call_starts=clean_prefix,
                                     country_name=tmp_parts_2[0],
                                     cq_zone=tmp_parts_2[1],
@@ -190,7 +190,7 @@ class DxccAll(object):
             help = 1
             return None
 
-    def find(self, call: str) -> Dxcc:
+    def find(self, call: str) -> DxObj:
         """
         Find the Country to a call sign
         Get all prefixes - sort by the length of the string - and then iterate LONGEST prefix first.
