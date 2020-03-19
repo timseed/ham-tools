@@ -26,17 +26,17 @@ class TOD(Enum):
     """
     Abstration of the Time of Day.
     """
-    NIGHT   = 1
+
+    NIGHT = 1
     SUNRISE = 2
     MORNING = 3
-    NOON    = 4
+    NOON = 4
     AFTERNOON = 5
     SUNSET = 6
 
 
 class TimeOfDay:
-
-    def calc_tod(self,date_time_dict, time_of_qso) -> str:
+    def calc_tod(self, date_time_dict, time_of_qso) -> str:
         """
         With 4 values in dictionary we should be able to determine when the TOD is.
         :param date_time_dict:
@@ -44,8 +44,6 @@ class TimeOfDay:
         :return:
         """
         return str(TOD.SUNSET)
-
-
 
 
 @dataclass
@@ -79,7 +77,7 @@ class LogRead:
         self,
         my_qra: str = "PK05je",
         filename: str = "/Users/tim/Library/Application Support/WSJT-X/ALL_WSPR.TXT",
-        tz="Asia/Manila"
+        tz="Asia/Manila",
     ):
         """
         Initialize the class.
@@ -89,10 +87,10 @@ class LogRead:
         self.filename = filename
         self.my_qra = my_qra
         self.band = HamBand()
-        self.tz=tz
+        self.tz = tz
         self.qso = []
         self.process()
-        self.tod=TimeOfDay()
+        self.tod = TimeOfDay()
 
     def process(self):
         """
@@ -118,7 +116,9 @@ class LogRead:
                 if len(parts) == 15:
                     # Ignore the Tx Lines
                     try:
-                        whn_noutc = datetime.strptime(f"20{parts[0]}{parts[1]}", "%Y%m%d%H%M")
+                        whn_noutc = datetime.strptime(
+                            f"20{parts[0]}{parts[1]}", "%Y%m%d%H%M"
+                        )
                         whn = whn_noutc.replace(tzinfo=pytz.UTC)
                         aprox_lat, aprox_lon = Locator.locator_to_latlong(
                             parts[7] + "LM"

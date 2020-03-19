@@ -3,12 +3,11 @@ from ham.mode.ft8 import LogRead
 
 
 class test_ft8LogRead(TestCase):
-
     def setUp(self) -> None:
         self.mode = LogRead()
 
     def test_is_object(self):
-        self.assertIsInstance(self.mode,LogRead)
+        self.assertIsInstance(self.mode, LogRead)
 
     def test_process(self):
         assert True

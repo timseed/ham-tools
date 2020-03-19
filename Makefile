@@ -23,9 +23,8 @@ $(VENV_NAME)/bin/activate: setup.py
 	${PYTHON} -m pip install -e .
 	touch $(VENV_NAME)/bin/activate
 
-
-.PHONY build:
-build: .dist/$(Package)
+.PHONY: build
+build:
 	$(PYTHON) setup.py sdist
 
 check:

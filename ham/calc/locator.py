@@ -1,6 +1,6 @@
 from __future__ import division
 from datetime import datetime
-from typing import Tuple,Dict
+from typing import Tuple, Dict
 from math import sin, cos, atan2, sqrt, radians, degrees
 import logging
 import ephem
@@ -254,7 +254,7 @@ class Locator(object):
 
         return bn
 
-    def calculate_heading_longpath(self, locator1: str, locator2: str ) -> float:
+    def calculate_heading_longpath(self, locator1: str, locator2: str) -> float:
         """calculates the heading from the first to the second locator (long path)
 
             Args:
@@ -283,7 +283,9 @@ class Locator(object):
 
         return lp
 
-    def calculate_sunrise_sunset(self, locator_str: str, calc_date:datetime = datetime.utcnow()) -> Dict :
+    def calculate_sunrise_sunset(
+        self, locator_str: str, calc_date: datetime = datetime.utcnow()
+    ) -> Dict:
         """calculates the next sunset and sunrise for a Maidenhead locator at a give date & time
 
             Args:
@@ -359,8 +361,12 @@ class Locator(object):
             evening_dawn = None
             sunset = None
 
-        result = {"morning_dawn": morning_dawn, "sunrise": sunrise,
-                  "evening_dawn": evening_dawn, "sunset": sunset}
+        result = {
+            "morning_dawn": morning_dawn,
+            "sunrise": sunrise,
+            "evening_dawn": evening_dawn,
+            "sunset": sunset,
+        }
 
         if morning_dawn:
             result["morning_dawn"] = morning_dawn.replace(tzinfo=self.UTC)

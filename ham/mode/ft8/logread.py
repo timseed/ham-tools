@@ -7,6 +7,7 @@ import pytz
 from geojson import FeatureCollection, LineString
 import json
 from enum import Enum
+import pickle
 
 """
 Convert my WSJX Log file into Geo Json.
@@ -26,6 +27,7 @@ class TOD(Enum):
     """
     Abstration of the Time of Day.
     """
+
     NIGHT = 1
     SUNRISE = 2
     MORNING = 3
@@ -35,7 +37,6 @@ class TOD(Enum):
 
 
 class TimeOfDay:
-
     def calc_tod(self, date_time_dict, time_of_qso) -> str:
         """
         With 4 values in dictionary we should be able to determine when the TOD is.
@@ -55,6 +56,8 @@ class ft8Qso:
     grid: str
     lat: float = 0.0
     lon: float = 0.0
+    heading_sp: float = 0.0
+    distance_sp_km: float = 0.0
 
     @property
     def __geo_interface__(self):
@@ -73,10 +76,10 @@ class ft8Qso:
 
 class LogRead:
     def __init__(
-            self,
-            my_qra: str = "PK05je",
-            filename: str = "/Users/tim/Data/ft8.dat",
-            tz="Asia/Manila"
+        self,
+        my_qra: str = "PK05je",
+        filename: str = "/Users/tim/Data/ft8.dat",
+        tz="Asia/Manila",
     ):
         """
         Initialize the class.
@@ -116,14 +119,25 @@ class LogRead:
         with open(self.filename, "rt") as log_file:
             for line in log_file:
                 parts = line.split()
+                bearing_short_path = 0
+                distance_short_path_km = 0.0
                 if len(parts) == 8:
                     # Ignore the Tx Lines
                     try:
-                        whn_noutc = datetime.strptime(f"20{parts[0]}{parts[1]}", "%Y%m%d%H%M%S")
+                        whn_noutc = datetime.strptime(
+                            f"20{parts[0]}{parts[1]}", "%Y%m%d%H%M%S"
+                        )
                         whn = whn_noutc.replace(tzinfo=pytz.UTC)
                         aprox_lat, aprox_lon = Locator.locator_to_latlong(
                             parts[7] + "LM"
                         )
+                        bearing_short_path = maidenhead.calculate_heading(
+                            self.my_qra, parts[7] + "LM"
+                        )
+                        distance_short_path_km = maidenhead.calculate_distance_km(
+                            self.my_qra, parts[7] + "LM"
+                        )
+
                         #
                         # Hack for Leaflet.js
                         # As I am close to the Pacific .... It plots Ph to US via Europe
@@ -137,11 +151,13 @@ class LogRead:
                                 when=whn,
                                 # ToDO timeofday
                                 timeofday="unk",
-                                band=self.band.khz_to_m(float(parts[5])/1000.0),
+                                band=self.band.khz_to_m(float(parts[5]) / 1000.0),
                                 call=parts[6],
                                 grid=parts[7] + "LM",
                                 lat=aprox_lat,
                                 lon=aprox_lon,
+                                heading_sp=bearing_short_path,
+                                distance_sp_km=distance_short_path_km,
                             )
                         )
                     except ValueError as ve:
@@ -156,12 +172,45 @@ class LogRead:
             [
                 LineString(
                     [(my_lon, my_lat), (q.lon, q.lat)],
-                    properties={"band": q.band, "call": q.call, "when": q.when.hour},
+                    properties={
+                        "band": q.band,
+                        "call": q.call,
+                        "when": q.when.hour,
+                        "distance": q.distance_sp_km,
+                        "heading": q.heading_sp,
+                    },
                 )
                 for q in self.qso
             ]
         )
 
-    def dump_geo_to_file(self, filename: str = "Myft8Spots.json"):
+    def dump_data(self):
+        """
+        Output data in a flat format for csv, pandas etc
+        :return:
+        """
+
+        my_lat, my_lon = Locator.locator_to_latlong(self.my_qra)
+
+        return [
+            {
+                "my_lat": my_lat,
+                "my_lon": my_lon,
+                "their_lat": q.lat,
+                "their_lon": q.lon,
+                "bearing": q.heading_sp,
+                "distance": q.distance_sp_km,
+                "band": q.band,
+                "call": q.call,
+                "when": q.when.hour,
+            }
+            for q in self.qso
+        ]
+
+    def dump_geojson_to_file(self, filename: str = "Myft8Spots.json"):
         with open(filename, "wt") as geoJsonFile:
             json.dump(self.dump_geo(), geoJsonFile)
+
+    def dump_data_to_pickle(self, filename: str = "Myft8Spots.pkl"):
+        with open(filename, "wb") as pickle_file:
+            pickle.dump(self.dump_geo(), pickle_file)
