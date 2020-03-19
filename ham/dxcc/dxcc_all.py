@@ -206,6 +206,7 @@ class DxccAll(object):
         for n in prefix[::-1]:
             if call.startswith(n):
                 match = self._dxcc_list[n]
+                break
         return match
 
     @property
