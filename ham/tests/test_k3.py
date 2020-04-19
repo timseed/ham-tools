@@ -2,41 +2,8 @@ from collections import namedtuple
 from unittest import TestCase
 from unittest.mock import patch
 
-from mock_pyserial.mock_serial import Serial as mock_serial
-
 from ham.equipment.elecraft.radio.k3 import K3
-
-
-class NonArduinoSerial(mock_serial):
-    """
-    The default Python mock_serial is for Arduino. And only accepts UTF data.
-    The K3 sends data as Binary.
-    """
-
-    def __init__(self, port='COM1', baudrate=19200, timeout=1,
-                 bytesize=8, parity='N', stopbits=1, xonxoff=0,
-                 rtscts=0):
-        self.name = port
-        self.port = port
-        self.timeout = timeout
-        self.parity = parity
-        self.baudrate = baudrate
-        self.bytesize = bytesize
-        self.stopbits = stopbits
-        self.xonxoff = xonxoff
-        self.rtscts = rtscts
-        self._isOpen = True
-        self._receivedData = b''
-        self._data = "It was the best of times.\nIt was the worst of times.\n"
-
-    def write(self, string):
-        self._receivedData += b"{string}"
-
-    def flushInput(self):
-        self._receivedData = b''
-
-    def flushOutput(self):
-        self._data = b''
+from .non_arduino_serial import NonArduinoSerial
 
 
 class test_k3(TestCase):
@@ -172,7 +139,7 @@ class test_k3(TestCase):
                       "PA1;": "on",
                       "PA2;": "off"}
         for k, v in good_tests.items():
-            print(f"{k} {v}")
+            # print(f"{k} {v}")
             fake_read.return_value = k  # Set the return value from the read
             self.assertEqual(self.rig.paq(), v)
 
@@ -283,28 +250,28 @@ class test_k3(TestCase):
         good_data = {
             "RA00;": "off",
             "RA01;": "on",
-            "R;":"Unk"}
+            "R;": "Unk"}
 
-        for k,v in good_data.items():
+        for k, v in good_data.items():
             fake_read.return_value = k
-            self.assertEqual(self.rig.raq(),v)
+            self.assertEqual(self.rig.raq(), v)
 
     @patch('ham.equipment.elecraft.radio.K3.read')
     def test_ra(self, fake_read):
         tc = namedtuple("tc", "set read_data result")
-        good_data = [tc(0, 'RA00;','off'),
+        good_data = [tc(0, 'RA00;', 'off'),
                      tc(1, 'RA01;', 'on')]
         for t in good_data:
             fake_read.return_value = t.read_data
-            self.assertEqual(self.rig.ra(t.set),t.result)
+            self.assertEqual(self.rig.ra(t.set), t.result)
 
     @patch('ham.equipment.elecraft.radio.K3.read')
     def test_filter(self, fake_read):
-        for n in range(0,10):
+        for n in range(0, 10):
             self.assertIsNone(self.rig.filter(n))
 
         # Make sure this raises an Exception
-        self.assertRaises(ValueError,self.rig.filter,**{'n':10})
+        self.assertRaises(ValueError, self.rig.filter, **{'n': 10})
 
     @patch('ham.equipment.elecraft.radio.K3.read')
     def test_filtern(self, fake_read):
@@ -330,7 +297,6 @@ class test_k3(TestCase):
         for k, v in good_data.items():
             fake_read.return_value = k
             self.assertEqual(self.rig.filterq(), v)
-
 
     def test_displayq(self):
         self.rig.displayq()

@@ -13,119 +13,133 @@ Further works remains here
 """
 
 import logging
+
 import serial
+from .Io import Io
 
+class K3(Io):
 
-class K3:
-    def __init__(self):
+    def __init__(self, device="/dev/cu.usbserial-A7004VW8", baud_rate=38400, timeout=1):
+        """
+        Initialize the Radio. Supply the base parameters.
+        After Flushing IO
+        :param device:
+        :param baud_rate:
+        :param timeout:
+        """
         self.logger = logging.getLogger(__name__)
-        device = "/dev/cu.usbserial-A7004VW8"
-        baudrate = 38400
         init = "PS"
-        self.ser = serial.Serial(device, baudrate=baudrate, timeout=1)
+        self.ser = self.open_serial(device=device, baud_rate=baud_rate, timeout=1)
         self.write(init)
         self.ser.flushInput()
         self.ser.flushOutput()
         self.modeq()
 
-    def close(self):
-        self.ser.flushInput()  # until the "quit" comes along.
-        self.ser.close()
-
-    def write(self, str_command: str) -> None:
-        for a in str_command.split(";"):
-            self.logger.debug("Sending Data to Serial Port")
-            self.ser.write((a + ";").encode("utf-8"))
-            # self.ser.flushInput()
-
-    def read(self, bytes_to_read: int) -> str:
-        try:
-            return self.ser.read(bytes_to_read).decode("utf-8")
-        except:
-            self.logger.error("Error Reading data")
-            return ""
+    def open_serial(self, device="/dev/cu.usbserial-A7004VW8", baud_rate=38400, timeout=1):
+        """
+        Open the serial Device
+        :param device:
+        :param baud_rate:
+        :param timeout:
+        :return:
+        """
+        return serial.Serial(device=device, baudrate=baud_rate, timeout=1)
 
     #
     # Set the VFO current frequency
     # FA00014060000
     # FA00007030000
     def qsy(self, freq: float) -> str:
-        if freq < 10e6:
-            cmd = "FA0000%d;" % freq  # in 7 digits
-        else:
-            cmd = "FA000%d;" % freq  # in 8 digits
-        self.write(cmd)
-        return self.qsyq()
+        return self._qsy('a', freq)
 
     #
     # Set the 2ND RX VFO current frequency
     # FB00014060000
     # FB00007030000
     def qsy2(self, freq: float) -> str:
-        if freq < 10e6:
-            cmd = "FB0000%d;" % freq  # in 7 digits
+        return self._qsy('b', freq)
+
+    def _qsy(self, band: str, freq: float) -> str:
+        if band not in ['a', 'b']:
+            cmd = ""
+            raise ValueError('Band code not a or b')
         else:
-            cmd = "FB000%d;" % freq  # in 8 digits
-        self.write(cmd)
-        return str(self.qsyq())
+            if freq < 10e6:
+                cmd = "FA0000%d;" % freq  # in 7 digits
+            elif freq > 10e6 and freq < 10e8:
+                cmd = "FB000%d;" % freq  # in 8 digits
+            else:
+                raise ValueError(f'Freq {freq} out of scope')
+            self.write(cmd)
+            return str(self.qsyq())
+
+    def _qsyq(self, band: str) -> str:
+        """
+
+        :param band:
+        :return:
+        """
+        band = band.upper()
+        if band not in ['A', 'B']:
+            raise ValueError('Band code not a or b')
+        else:
+            self.logger.debug(f"get VFO-{band}")
+            self.write(f"F{band};")
+            result = self.read(20)
+            if len(result) > 15:
+                self.logger.debug("result is " + result)
+                hz = result.split(";")[2].replace(f"F{band}", "")[0:8]
+                # FA;FA00024893007;
+                return hz
+            else:
+                return "0"
 
     #
     # Get the VFO current frequency
     # FA00014060000
     # FA00007030000
     def qsyq(self) -> str:
-        # self.ser.flushOutput()
-        # self.ser.flushInput()
-        self.logger.debug("get VFO-A")
-        self.write("FA;")
-        result = self.read(20)
-        if len(result) > 15:
-            self.logger.debug("result is " + result)
-            hz = result.split(";")[2].replace("FA", "")[0:8]
-            # FA;FA00024893007;
-            return hz
-        else:
-            return "0"
+        return self._qsyq('A')
 
-    #
-    # Get the 2ND RX VFO current frequency
-    # FA00014060000
-    # FA00007030000
     def qsyq2(self) -> str:
-        self.logger.debug("Get VFO-B")
-        self.write("FB;")
-        result = self.read(20)
-        if len(result) > 15:
-            self.logger.debug("result is " + result)
-            hz = result.split(";")[2].replace("FB", "")[0:8]
-            # FA;FA00024893007;
-            return hz
-        else:
-            return "0"
+        return self._qsyq('B')
 
-    #
-    # Get the First IF current frequency
-    # FI;
-    # FI6500;
     def fiq(self) -> str:
+        """
+        Get the First IF current frequency
+        FI;
+        FI6500;
+
+        :return: string
+        """
         self.write("FI;")
         result = self.read(7)
         if len(result) != 7:
             return "0"
         return "821" + result[2:3] + "." + result[3:6]
 
-    #
-    # Set NB to level (off=0, 1, 2)
     # TODO: use SW22; to change thresh but we have to ready it first
-    def nb(self, level, thresh):
-        self.write("NB%s;" % level)
+    def nb(self, level, thresh) -> None:
+        """
+        Set the NB Threshold Level.
+        :param level:
+        :param thresh: 0-2. Off, 1, 2
+        :return:
+        """
+        if 0 <= thresh <= 2:
+            self.write("NB%s;" % level)
+        else:
+            raise ValueError(f"Invalid Threshold level {thresh}")
 
-    #
-    # Get the NB setting
-    # NB
-    # NB00; Off, hi thresh
-    # NB21; NB2, low thres
     def nbq(self) -> str:
+        """
+
+         Get the NB setting
+         NB
+         NB00; Off, hi thresh
+         NB21; NB2, low thres
+        :return:
+        """
         self.write("NB;")
         result = self.read(5)
         if len(result) != 5:
@@ -134,10 +148,6 @@ class K3:
         thresh = result[3]
         return "NB: %c %c" % (level, thresh)
 
-    #
-    # Set the Mode
-    # MD1; LSB
-    # FA00007030000
     def mode(self, str_mode_setting: str) -> str:
         """
         Set the Mode.
@@ -165,6 +175,10 @@ class K3:
     #
     # Get the mode
     def modeq(self) -> str:
+        """
+        Get the Mode that the radio is operating on
+        :return: string to represent to mode. i.e. cw, ssb.
+        """
         self.write("K22;MD;")
         result = self.read(4)
         if len(result) != 4:
@@ -188,23 +202,30 @@ class K3:
         else:
             return "???"
 
-    #
-    # Set the preamp
-    # PA0; off
-    # PA1; on
-    def pa(self, pre_amp_setting="on") -> str:
-        modenum = ""
-        if pre_amp_setting.lower() == "off":
-            modenum = 0
-        if pre_amp_setting.lower() == "on":
-            modenum = 1
-        cmd = "PA%d;" % modenum
-        self.write(cmd)
-        return self.paq()
+    def pa(self, pre_amp_setting: str = "on") -> str:
+        """
+            # Set the preamp
+            # PA0; off
+            # PA1; on
 
-    #
-    # Get the preamp
+        :param pre_amp_setting:  on or off. Other values cause ValueError.
+        :return: pre-amp-query -> Str
+        """
+        modenum = ""
+        pre_amp_setting = pre_amp_setting.lower()
+        if pre_amp_setting in ["on", "off"]:
+            modenum = 1 if pre_amp_setting == "on" else 0
+            cmd = "PA%d;" % modenum
+            self.write(cmd)
+            return self.paq()
+        else:
+            raise ValueError(f"Unknown pre-amp request {pre_amp_setting}")
+
     def paq(self) -> str:
+        """
+        Get the preamp
+        :return: "0" Unknown, "on" or "off".
+        """
         self.write("PA;")
         result = self.read(4)
         if len(result) != 4:
@@ -280,47 +301,89 @@ class K3:
         except:
             logging.warning("sendcw issue")
 
-    # TODO
-    # Set speed 15=K015;
-    def cwspeedq(self) -> str:
+    def cwspeedq(self) -> int:
+        """
+        Get the CW Speed.
+
+        K015; -> 15 wpm
+        :return: string of wpm or 0
+        """
         cmd = "KS;"
         self.write(cmd)
         result = self.read(5)
         if len(result) != 5:
-            return "0"
-        return result[1:3]
+            return 0
+        try:
+            return int(result[1:4])
+        except ValueError:
+            self.logger.error("Error converting cw speed")
+            return 0
 
-    # TODO
-    def cwspeed(self, speed) -> str:
-        cmd = "K%3d;"
+    def cwspeed(self, speed) -> int:
+        """
+        Set the CW Speed.
+
+        :param speed:
+        :return: Current CW speed as int
+        """
+        cmd = "K%3d;" % speed
         self.write(cmd)
         return self.cwspeedq()
 
-    #
-    # Set ATT to off=0|on=1
-    def ra(self, offon) -> str:
-        return "Unused"
 
-    #
-    # Get the ATT setting
-    # RA;
-    # RA00; off
-    # RA01; on
-    def raq(self):
-        return "Unused"
+    def ra(self, offon: int) -> str:
+        """
+        Set ATT to off=0|on=1
+        :param offon:  int 0 off,1 on
+        :return: str on, off or Unk
+        """
+        if 2 > offon >= 0:
+            self.write('RA%1d;'.format(offon))
+            return self.raq()
+        else:
+            raise ValueError(f"Invalid ra setting {offon}")
+
+
+    def raq(self) -> str:
+        """
+
+        Get the ATT setting
+
+        RA;
+        RA00; off
+        RA01; on
+        :return: string on on, off or Unk
+        """
+        cmd = "RA;"
+        self.write(cmd)
+        result = self.read(5)
+        if len(result) != 5:
+            return "Unk"
+        if result == "RA00;":
+            return "off"
+        elif result == "RA01;":
+            return "on"
+        else:
+            return "Unk"
 
     #
     # Set the filter
     # 1, 2, 3, 4
     # FW00001;
     # 0 means "next"
-    def filter(self, n):
-        cmd = "FW0000%d;" % n
-        self.write(cmd)
+    def filter(self, n) -> None:
+        if n <10:
+            cmd = "FW0000%d;" % n
+            self.write(cmd)
+        else:
+            raise ValueError(f"Filter number too large {n}")
 
-    #
-    # Get the filter number
-    def filtern(self):
+    def filtern(self) -> str:
+        """
+        Get the filter number. If data invalid return "0"
+
+        :return: str
+        """
         self.write("FW;")
         result = self.read(9)
         if len(result) != 9:
@@ -329,7 +392,13 @@ class K3:
 
     #
     # Get the filter info
-    def filterq(self):
+    def filterq(self) -> str:
+        """
+        Get the current Filter
+        Returns a string in the format "nnnnHz n"
+
+        :return: str
+        """
         self.write("FW;")
         result = self.read(9)
         if len(result) != 9:
@@ -401,63 +470,3 @@ tagged with ‘*’ as the first character in its label enables channel-hop scan
     def use_channel(self, id: int) -> int:
         self.write("MC{:03d};".format(id))
         return True
-
-
-if __name__ == "__main__":
-    import sys
-
-    testmode = int(sys.argv[1])
-    rig = K3()
-    if testmode == 1:
-        print("testing K3")
-        print("What Mode")
-        print("" + rig.modeq())
-        print("Check PreAmp")
-        print("" + rig.paq())
-        print("PreAmp on")
-        print("" + rig.pa("on"))
-        print("VFO-A")
-        print("" + rig.qsyq())
-        print("VFO-B")
-        print("" + rig.qsyq2())
-        print("FIQ")
-        print("" + rig.fiq())
-        print("Noise Blocker-A")
-        print("" + rig.nbq())
-        print("Mode")
-        print("" + rig.modeq())
-        print("Pre Amp")
-        print("" + rig.paq())
-        print("Power Settings")
-        print("" + rig.powerq())
-        print("VFO")
-        print("" + rig.vfoq())
-        print("CW Speed")
-        print("" + rig.cwspeedq())
-        print("RA ")
-        print("" + rig.raq())
-        print("Filter")
-        print("" + rig.filterq())
-        print("Display")
-        print("" + rig.displayq())
-        # print("Ver")
-        # print('' + rig.verq(, x))
-        print("Time")
-        print("" + rig.timeq())
-        print("Tests Finished")
-    elif testmode == 0:
-        rig.modeq()
-        print("About to send")
-        from time import sleep
-
-        rig.sendcw("KYW hi there;")
-        sleep(3)
-        print("Done")
-    elif testmode == 3:
-        #        print(''+rig.modeq(),end='\n')
-        print("" + rig.qsyq(), end="\n")
-        print("Done")
-    elif testmode == 4:
-        print("Set Memory")
-        status = rig.use_channel(2)
-        print(" Worked") if status else print("Failed")
