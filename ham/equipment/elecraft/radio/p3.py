@@ -45,12 +45,12 @@ class P3(Io):
         """
         self.logger = logging.getLogger(__name__)
         init = "PS"
-        self.ser = self.open_serial(device=device, baud_rate=baud_rate, timeout=1)
+        self.ser = self.open_serial(port=device, baud_rate=baud_rate, timeout=1)
         self.write(init)
         self.ser.flushInput()
         self.ser.flushOutput()
 
-    def open_serial(self, device="/dev/cu.usbserial-A7004VW8", baud_rate=38400, timeout=1):
+    def open_serial(self, port="/dev/cu.usbserial-A7004VW8", baud_rate=38400, timeout=1):
         """
         Open the serial Device
         :param device:
@@ -58,7 +58,7 @@ class P3(Io):
         :param timeout:
         :return:
         """
-        return serial.Serial(device=device, baudrate=baud_rate, timeout=1)
+        return serial.Serial(port=port, baudrate=baud_rate, timeout=1)
 
     def avg(self, time_in_secs: int) -> None:
         """

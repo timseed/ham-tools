@@ -19,7 +19,7 @@ from .Io import Io
 
 class K3(Io):
 
-    def __init__(self, device="/dev/cu.usbserial-A7004VW8", baud_rate=38400, timeout=1):
+    def __init__(self, port="/dev/cu.usbserial-A7004VW8", baud_rate=38400, timeout=1):
         """
         Initialize the Radio. Supply the base parameters.
         After Flushing IO
@@ -29,21 +29,22 @@ class K3(Io):
         """
         self.logger = logging.getLogger(__name__)
         init = "PS"
-        self.ser = self.open_serial(device=device, baud_rate=baud_rate, timeout=1)
+
+        self.ser = self.open_serial(port=port, baud_rate=baud_rate, timeout=1)
         self.write(init)
         self.ser.flushInput()
         self.ser.flushOutput()
         self.modeq()
 
-    def open_serial(self, device="/dev/cu.usbserial-A7004VW8", baud_rate=38400, timeout=1):
+    def open_serial(self, port="/dev/cu.usbserial-A7004VW8", baud_rate=38400, timeout=1):
         """
         Open the serial Device
-        :param device:
+        :param port:
         :param baud_rate:
         :param timeout:
         :return:
         """
-        return serial.Serial(device=device, baudrate=baud_rate, timeout=1)
+        return serial.Serial(port=port, baudrate=baud_rate, timeout=1)
 
     #
     # Set the VFO current frequency

@@ -12,7 +12,7 @@ class test_k3(TestCase):
     def setUp(self, fake_open_serial) -> None:
         fake_open_serial.return_value = NonArduinoSerial(port='COM99', baudrate=2400)
         self.rig = K3(
-            device='COMDOESNOTEXIST')  # This Port does not matter - as have mocked the internal opening of Serial
+            port='COMDOESNOTEXIST')  # This Port does not matter - as have mocked the internal opening of Serial
 
     # def test_show_port(self):
     #     self.assertEqual(self.rig.show_port(), 'COM99')
