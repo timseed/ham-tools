@@ -101,7 +101,7 @@ class P3(Io):
             raise ValueError(f"Invalid Baud setting requested {speed}")
 
     # todo offsets not implemented yet
-    def centre_freq(self,freq_in_hz:float) -> None:
+    def centre_freq(self, freq_in_hz: float) -> None:
         """
         Place the centre of the P3 at a known frequency.
         Note. Only valid Ham ranges are guaranteed.
@@ -112,10 +112,10 @@ class P3(Io):
         :param freq_in_hz: 14060.123 or 0
         :return: None
         """
-        #formatted string for 14060 would be
-        #CTF+00014060000;
+        # formatted string for 14060 would be
+        # CTF+00014060000;
         if 0 <= freq_in_hz < 29000.0:
-            f = int(freq_in_hz*1000)
+            f = int(freq_in_hz * 1000)
             self.write("#CTF+{:110d};".format(f))
         else:
             raise ValueError(f"Unknown frequency requested {freq_in_hz}")
@@ -125,15 +125,15 @@ class P3(Io):
         result = self.read(16)
         if len(result) != 16:
             return 0.0
-        return float(result[4:-1])/1000.0
+        return float(result[4:-1]) / 1000.0
 
-    def display_mode(self,mode:int) -> None:
+    def display_mode(self, mode: int) -> None:
         """
         0 (spectrum only) or 1 (spectrum + waterfall).
         :param mode:
         :return:
         """
-        if mode in [0,1]:
+        if mode in [0, 1]:
             return self.write("#DSM{:1d};".format(mode))
         else:
             raise ValueError(f"display_mode bad mode requested {mode}")
@@ -149,3 +149,70 @@ class P3(Io):
             return 'Unk'
         return "spectrum" if result == "DSM0;" else "spectrum/waterfall"
 
+    def nb(self, on_off: int):
+        """
+        Turn noise blanker on or off
+        :param on_off: on = 1, off=0
+        :return: None
+        """
+        if on_off in [0, 1]:
+            # format: BRn; or  # BRn; where n is 0 (4800 b), 1 (9600 b), 2 (19200 b), or 3 (38400 b). The PX3 Utility program automatically sets the PX3 to 38400 baud for downloads, then restores the baud rate to the user's selection (that was made using either this command or the PX3's RS232 menu entry). Note that the RS232 port that connects to the KX3 always runs at 38400 baud. Any BR command that is received from a host computer affects the baud rate of the PX3 (on the RS232 port that connects to the PC), not the KX3.
+            return self.write("#NB{:1d};".format(on_off))
+        else:
+            raise ValueError(f"Invalid Baud setting requested {on_off}")
+
+    def nbq(self) -> str:
+        """
+        Return a string that indicates the Noise blanking setting.
+        :return:  On, Off or Unk if something went wrong.
+        """
+        self.write("#NB;")
+        result = self.read(4)
+        if len(result) != 4:
+            print(f"Err {result}")
+            return 'Unk'
+        return "on" if result == "NM1;" else "off"
+
+    def nbl(self, nb_level: int) -> None:
+        """
+        Set noise blanking level
+        :param nb_level:
+        :return:
+        """
+        if nb_level in range(1, 16):
+            # format: BRn; or  # BRn; where n is 0 (4800 b), 1 (9600 b), 2 (19200 b), or 3 (38400 b). The PX3 Utility program automatically sets the PX3 to 38400 baud for downloads, then restores the baud rate to the user's selection (that was made using either this command or the PX3's RS232 menu entry). Note that the RS232 port that connects to the KX3 always runs at 38400 baud. Any BR command that is received from a host computer affects the baud rate of the PX3 (on the RS232 port that connects to the PC), not the KX3.
+            return self.write("#NBL{:02d};".format(nb_level))
+        else:
+            raise ValueError(f"Invalid noise_blanking level setting requested {nb_level}")
+
+    def nblq(self) -> str:
+        """
+        Noice Blanker level
+        :return:
+        """
+        self.write("#NBL;")
+        result = self.read(9)
+        if len(result) != 9:
+            return "0"
+        return result[4:-1]
+
+
+    def fnl(self,key_id:int)->str:
+        """
+        Get string setting for function key
+        :param key_id: int 1-8
+        :return: text of function key. Unk if error.
+        """
+        if key_id in range(1,9):
+            try:
+                self.write("#FN{:1d};".format(key_id))
+                result = self.read(14)
+                if len(result) != 14:
+                    return "Unk"
+                else:
+                    return result[4:-1]
+            except Exception as err:
+                return "Unk"
+
+        else:
+            raise ValueError(f"Function key invalid number {key_id}")

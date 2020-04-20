@@ -79,3 +79,18 @@ class Test_p3(TestCase):
         for k, v in good_tests.items():
             fake_read.return_value = k
             self.assertEqual(v,self.p3.display_modeq())
+
+    def test_nb(self):
+        self.assertIsNone(self.p3.nb(0))
+        self.assertIsNone(self.p3.nb(1))
+        self.assertRaises(ValueError, self.p3.nb, **{"on_off": 2})
+
+    @patch('ham.equipment.elecraft.radio.P3.read')
+    def test_nbq(self,fake_read):
+        good_tests = {'NB0;': "off",
+                      'NB0;': "off",
+                      'N;': "Unk",
+                      }
+        for k, v in good_tests.items():
+            fake_read.return_value = k
+            self.assertEqual(v, self.p3.nbq())
