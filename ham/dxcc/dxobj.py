@@ -1,9 +1,9 @@
 import logging
-import os
-import re
-
 
 class DxObj(object):
+    """
+    This hold the Dx Record of a Callsign allocation
+    """
     def __init__(
         self,
         call_starts,
@@ -51,18 +51,19 @@ class DxObj(object):
             )
         )
 
+    def __repr__(self):
+        """
+        The official representation of this class
+        :return:
+        """
+        return self.dump()
+
     def dump(self):
         return str.format(
-            "Country {}:\n\tCQ\t{}\n\tITU\t{}\n\tAbbv\t{}\n\t\tPos\n\t\t\tLat\t{}\n\t\t\tLon\t{"
-            "}\n\tTZ\t{}",
-            self._Country_Name,
-            self._CQ_Zone,
-            self._ITU_Zone,
-            self._continent_abbreviation,
-            self._Latitude,
-            self._Longitude,
-            self._Local_time_offset,
-        )
+            f"Country:'{self.Country_Name}',CQ:{self.CQ_Zone},ITU:{self.ITU_Zone},"
+            f"Continent_Abbreviation:'{self.Continent_Abbreviation}',Latitude:{self.Latitude},"
+            f"Longitude:{self.Longitude},Local_time_offset:{self.Local_time_offset}")
+
 
     @property
     def Country_Name(self):
