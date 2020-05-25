@@ -1,10 +1,11 @@
 from setuptools import setup, find_packages
 
-requirements = 'ephem', 'pyserial', 'pyyaml', 'geojson'
-
+requirements = 'wheel', 'ephem', 'pyserial', 'pyyaml', 'geojson'
+for p in find_packages():
+    print("Instaling ipackage "+str(p))
 setup(
     name='ham',
-    version='1.0.3',
+    version='1.0.4',
     packages=find_packages(),
     include_package_data=True, #Uses Manifest.IN
     url='',
@@ -21,7 +22,8 @@ setup(
             'sphinx',
             'recommonmark',
             'black',
-            'pylint'
+            'pylint',
+            'mock_pyserial'
         ]},
     #Dev can be triggered by
     #python setup.py sdist

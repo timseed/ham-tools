@@ -9,7 +9,7 @@ VENV_ACTIVATE=. ~/$(VENV_NAME)/bin/activate
 PYTHON=~/${VENV_NAME}/bin/python3
 PIP = pip3
 PYCOV = $(PYTHON) -m coverage
-Package = ham-1.0.3.tar.gz
+Package = ham-1.0.4.tar.gz
 
 objects := $(patsubst %.py,$(Package).tar.gz,$(wildcard *.py))
 
@@ -42,6 +42,6 @@ coverage:
 	pytest --cov=$(PYSRC)
 
 install:
-	pip install $$(ls -tr dist/*.gz | tail -1 )
+	$(PIP) install $$(ls -tr dist/*.gz | tail -1 )
 
 .DEFAULT_GOAL := all 

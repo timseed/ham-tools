@@ -1,19 +1,21 @@
 import logging
 
+
 class DxObj(object):
     """
     This hold the Dx Record of a Callsign allocation
     """
+
     def __init__(
-        self,
-        call_starts,
-        country_name,
-        cq_zone,
-        itu_zone,
-        continent_abbreviation,
-        latitude,
-        longitude,
-        local_time_offset,
+            self,
+            call_starts,
+            country_name,
+            cq_zone,
+            itu_zone,
+            continent_abbreviation,
+            latitude,
+            longitude,
+            local_time_offset,
     ):
         """
         Create a Country - note this is using the CallSign Prefix
@@ -36,19 +38,33 @@ class DxObj(object):
         self._Longitude = longitude
         self._Local_time_offset = local_time_offset
         self.logger = logging.getLogger(__name__)
+        self._version = "1.0.1"
 
     def show(self):
-        print(
-            str.format(
-                "Country {}:\n\tCQ\t{}\n\tITU\t{}\n\tAbbv\t{}\n\t\tPos\n\t\t\tLat\t{}\n\t\t\tLon\t{}\n\tTZ\t{}",
-                self._Country_Name,
-                self._CQ_Zone,
-                self._ITU_Zone,
-                self._continent_abbreviation,
-                self._Latitude,
-                self._Longitude,
-                self._Local_time_offset,
-            )
+        print(f"{self.dump()}")
+
+    @property
+    def Version(self):
+        return self._version
+
+    def __eq__(self, other):
+        """
+        Custom __eq__ this allows Python to compute
+            assert obj == obj2
+        Otherwise it fails and we have to check like
+            if obj.Field == obj2.Field
+
+        :param other:
+        :return:
+        """
+        return (
+                isinstance(other, DxObj)
+                and self.Call_Starts == other.Call_Starts
+                and self.Country_Name == other.Country_Name
+                and self.Longitude == other.Longitude
+                and self.Latitude == other.Latitude
+                and self.ITU_Zone == other.ITU_Zone
+                and self.CQ_Zone == other.CQ_Zone
         )
 
     def __repr__(self):
@@ -60,10 +76,10 @@ class DxObj(object):
 
     def dump(self):
         return str.format(
-            f"Country:'{self.Country_Name}',CQ:{self.CQ_Zone},ITU:{self.ITU_Zone},"
-            f"Continent_Abbreviation:'{self.Continent_Abbreviation}',Latitude:{self.Latitude},"
-            f"Longitude:{self.Longitude},Local_time_offset:{self.Local_time_offset}")
-
+            f"DxObj(call_starts='{self.Call_Starts}',country_name='{self.Country_Name}',cq_zone={self.CQ_Zone},itu_zone={self.ITU_Zone},"
+            f"continent_abbreviation='{self.Continent_Abbreviation}',latitude={self.Latitude},"
+            f"longitude={self.Longitude},local_time_offset={self.Local_time_offset})"
+        )
 
     @property
     def Country_Name(self):
@@ -92,3 +108,7 @@ class DxObj(object):
     @property
     def Local_time_offset(self):
         return self._Local_time_offset
+
+    @property
+    def Call_Starts(self):
+        return self._Call_Starts
