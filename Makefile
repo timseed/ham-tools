@@ -13,7 +13,7 @@ Package = ham-1.5.0.tar.gz
 
 objects := $(patsubst %.py,$(Package).tar.gz,$(wildcard *.py))
 
-all : test bump-minor build install
+all : test bump-minor $(MAKE)build $(MAKE)install
 
 # Requirements are in setup.py, so whenever setup.py is changed, re-run installation of dependencies.
 venv: $(VENV_NAME)/bin/activate
