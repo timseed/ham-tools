@@ -9,7 +9,7 @@ VENV_ACTIVATE=. ~/$(VENV_NAME)/bin/activate
 PYTHON=~/${VENV_NAME}/bin/python3
 PIP = pip3
 PYCOV = $(PYTHON) -m coverage
-Package = ham-1.0.4.tar.gz
+Package = ham-1.1.0.tar.gz
 
 objects := $(patsubst %.py,$(Package).tar.gz,$(wildcard *.py))
 
@@ -47,8 +47,8 @@ install:
 .DEFAULT_GOAL := all 
 
 bump-minor:
-	bumpversion minor --tag --commit
+	$(PYTHON) -m bumpversion minor --tag --commit
 
 bump-patch:
-	bumpversion patch --tag --commit
+	$(PYTHON) -m bumpversion patch --tag --commit
 
