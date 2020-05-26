@@ -226,3 +226,25 @@ class DxccAll(object):
         countrynames = list(set([self._dxcc_list[k].Country_Name for k in self._dxcc_list.keys()]))
         countrynames.sort()
         return countrynames
+
+    @property
+    def cqzonelist(self) -> list:
+        """
+        List of all cq zones
+        :return: List of All CQ Zones
+        """
+        cqzones = list(set([self._dxcc_list[k].CQ_Zone for k in self._dxcc_list.keys()]))
+        cqzones.sort()
+        return cqzones
+
+    @property
+    def ituzonelist(self) -> list:
+        """
+        List of all itu zones
+        :return: List of All ITU Zones
+        """
+        ituzones = list(set([self._dxcc_list[k].ITU_Zone for k in self._dxcc_list.keys()]))
+        ituzones.sort()
+        return ituzones
+
+
