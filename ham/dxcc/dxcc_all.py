@@ -97,13 +97,16 @@ class DxccAll(object):
         """
         self._dxcc_list = {}
         wanted_file = ""
+        txt = ""
         try:
             wanted_file = (
                 os.path.join(os.path.dirname(ham.dxcc.__file__), "data") + "/cty.dat"
             )
             logging.debug(f"want to open {wanted_file}")
             print(f"want to open {wanted_file}")
-            txt = open(wanted_file).read()
+            with open(wanted_file) as dxcc_data_file:
+                txt = dxcc_data_file.read()
+                dxcc_data_file.close()
             logging.debug("file opened")
             element = txt.split(";")
             for e in element:
