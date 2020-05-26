@@ -223,5 +223,6 @@ class DxccAll(object):
         List of all Countries (not Prefixes) i.e. DU1,DU2,DU3 are just 1 Country.
         :return: List of All Country Names
         """
-        countrynames = [self._dxcc_list[k].country_name for k in self._dxcc_list.keys()]
-        return list(set(countrynames)).sort()
+        countrynames = list(set([self._dxcc_list[k].Country_Name for k in self._dxcc_list.keys()]))
+        countrynames.sort()
+        return countrynames

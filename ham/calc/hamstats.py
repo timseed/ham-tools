@@ -19,7 +19,7 @@ class WorkedCountries(object):
         status = [False]
         self.Countries_Band_To_Work = {}
 
-        for c in d.countrylist():
+        for c in d.countrylist:
             self.Countries_Band_To_Work[c] = {}
             for b in hb.Band:
                 for s in status:
@@ -41,7 +41,7 @@ class ContestCountries(WorkedCountries):
         Status = [0]
 
         self.Countries_Band_To_Work = {}
-        for c in d.countrylist():
+        for c in d.countrylist:
             self.Countries_Band_To_Work[c] = {}
             for b in self.hb.Band:
                 for s in Status:

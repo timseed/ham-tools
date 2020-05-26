@@ -12,10 +12,7 @@ class TestVubirds(TestCase):
     def test_class_ok(self):
         self.assertIsInstance(self.vub, VuBirds)
 
-    def test_process_no_data(self):
-        self.assertEqual(self.vub.process([]), VuBirds.header)
-
-    def test_process_no_data(self):
+    def test_process_no_data2(self):
         sats = [SatFM(satname="AO51", downlink_freq=436.150,
                       uplink_freq=144.200,
                       ctss_code=0,

@@ -13,7 +13,7 @@ Package = ham-1.0.4.tar.gz
 
 objects := $(patsubst %.py,$(Package).tar.gz,$(wildcard *.py))
 
-all : test build install
+all : test build bump-minor install
 
 # Requirements are in setup.py, so whenever setup.py is changed, re-run installation of dependencies.
 venv: $(VENV_NAME)/bin/activate
@@ -45,3 +45,10 @@ install:
 	$(PIP) install $$(ls -tr dist/*.gz | tail -1 )
 
 .DEFAULT_GOAL := all 
+
+bump-minor:
+	bumpversion minor --tag --commit
+
+bump-patch:
+	bumpversion patch --tag --commit
+

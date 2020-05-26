@@ -1,7 +1,12 @@
 import serial
-
+import daiquiri
 
 class Io:
+
+    def __init__(self):
+
+        self.ser=None
+        self.logger = daiquiri.getLogger(__name__)
 
     def open_serial(self, device="/dev/cu.usbserial-A7004VW8", baud_rate=38400, timeout=1):
         """

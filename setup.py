@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-requirements = 'wheel', 'ephem', 'pyserial', 'pyyaml', 'geojson'
+requirements = 'wheel', 'ephem', 'pyserial', 'pyyaml', 'geojson','PyQt5'
 for p in find_packages():
     print("Instaling ipackage "+str(p))
 setup(
@@ -27,7 +27,7 @@ setup(
         ]},
     #Dev can be triggered by
     #python setup.py sdist
-    #pip install dist/ham-1.0.2a0.tar.gz[dev]
+    #pip install dist/ham-1.0.4.tar.gz[dev]
     #
 )
 
