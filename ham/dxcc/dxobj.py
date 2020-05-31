@@ -7,15 +7,15 @@ class DxObj(object):
     """
 
     def __init__(
-            self,
-            call_starts,
-            country_name,
-            cq_zone,
-            itu_zone,
-            continent_abbreviation,
-            latitude,
-            longitude,
-            local_time_offset,
+        self,
+        call_starts,
+        country_name,
+        cq_zone,
+        itu_zone,
+        continent_abbreviation,
+        latitude,
+        longitude,
+        local_time_offset,
     ):
         """
         Create a Country - note this is using the CallSign Prefix
@@ -58,13 +58,13 @@ class DxObj(object):
         :return:
         """
         return (
-                isinstance(other, DxObj)
-                and self.Call_Starts == other.Call_Starts
-                and self.Country_Name == other.Country_Name
-                and self.Longitude == other.Longitude
-                and self.Latitude == other.Latitude
-                and self.ITU_Zone == other.ITU_Zone
-                and self.CQ_Zone == other.CQ_Zone
+            isinstance(other, DxObj)
+            and self.Call_Starts == other.Call_Starts
+            and self.Country_Name == other.Country_Name
+            and self.Longitude == other.Longitude
+            and self.Latitude == other.Latitude
+            and self.ITU_Zone == other.ITU_Zone
+            and self.CQ_Zone == other.CQ_Zone
         )
 
     def __repr__(self):

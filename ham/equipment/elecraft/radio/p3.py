@@ -50,7 +50,9 @@ class P3(Io):
         self.ser.flushInput()
         self.ser.flushOutput()
 
-    def open_serial(self, port="/dev/cu.usbserial-A7004VW8", baud_rate=38400, timeout=1):
+    def open_serial(
+        self, port="/dev/cu.usbserial-A7004VW8", baud_rate=38400, timeout=1
+    ):
         """
         Open the serial Device
         :param device:
@@ -146,7 +148,7 @@ class P3(Io):
         self.write("#DSM;")
         result = self.read(5)
         if len(result) != 5:
-            return 'Unk'
+            return "Unk"
         return "spectrum" if result == "DSM0;" else "spectrum/waterfall"
 
     def nb(self, on_off: int):
@@ -170,7 +172,7 @@ class P3(Io):
         result = self.read(4)
         if len(result) != 4:
             print(f"Err {result}")
-            return 'Unk'
+            return "Unk"
         return "on" if result == "NM1;" else "off"
 
     def nbl(self, nb_level: int) -> None:
@@ -183,7 +185,9 @@ class P3(Io):
             # format: BRn; or  # BRn; where n is 0 (4800 b), 1 (9600 b), 2 (19200 b), or 3 (38400 b). The PX3 Utility program automatically sets the PX3 to 38400 baud for downloads, then restores the baud rate to the user's selection (that was made using either this command or the PX3's RS232 menu entry). Note that the RS232 port that connects to the KX3 always runs at 38400 baud. Any BR command that is received from a host computer affects the baud rate of the PX3 (on the RS232 port that connects to the PC), not the KX3.
             return self.write("#NBL{:02d};".format(nb_level))
         else:
-            raise ValueError(f"Invalid noise_blanking level setting requested {nb_level}")
+            raise ValueError(
+                f"Invalid noise_blanking level setting requested {nb_level}"
+            )
 
     def nblq(self) -> str:
         """
@@ -196,14 +200,13 @@ class P3(Io):
             return "0"
         return result[4:-1]
 
-
-    def fnl(self,key_id:int)->str:
+    def fnl(self, key_id: int) -> str:
         """
         Get string setting for function key
         :param key_id: int 1-8
         :return: text of function key. Unk if error.
         """
-        if key_id in range(1,9):
+        if key_id in range(1, 9):
             try:
                 self.write("#FN{:1d};".format(key_id))
                 result = self.read(14)

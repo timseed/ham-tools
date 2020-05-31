@@ -226,7 +226,9 @@ class DxccAll(object):
         List of all Countries (not Prefixes) i.e. DU1,DU2,DU3 are just 1 Country.
         :return: List of All Country Names
         """
-        countrynames = list(set([self._dxcc_list[k].Country_Name for k in self._dxcc_list.keys()]))
+        countrynames = list(
+            set([self._dxcc_list[k].Country_Name for k in self._dxcc_list.keys()])
+        )
         countrynames.sort()
         return countrynames
 
@@ -236,7 +238,9 @@ class DxccAll(object):
         List of all cq zones
         :return: List of All CQ Zones
         """
-        cqzones = list(set([self._dxcc_list[k].CQ_Zone for k in self._dxcc_list.keys()]))
+        cqzones = list(
+            set([self._dxcc_list[k].CQ_Zone for k in self._dxcc_list.keys()])
+        )
         cqzones.sort()
         return cqzones
 
@@ -246,8 +250,8 @@ class DxccAll(object):
         List of all itu zones
         :return: List of All ITU Zones
         """
-        ituzones = list(set([self._dxcc_list[k].ITU_Zone for k in self._dxcc_list.keys()]))
+        ituzones = list(
+            set([self._dxcc_list[k].ITU_Zone for k in self._dxcc_list.keys()])
+        )
         ituzones.sort()
         return ituzones
-
-

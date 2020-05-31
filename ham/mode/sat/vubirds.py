@@ -20,14 +20,11 @@ class VuBirds:
     Very simple 2m/70cm Satellite configurator.
     """
 
-
-
-
     # This is the output file format
     # 6, Name, 145.800,-, 0.6,, 88.8, 88.5, 023, nm, FM, 5.00, S,, , , ,
     line = "{},{},{},off,5.000000,{},{},{},023,NN,FM,5.00,S,,,,,\n"
 
-    def __init__(self,static_lines=None):
+    def __init__(self, static_lines=None):
         """
         Setup the logger
         """
@@ -36,7 +33,7 @@ class VuBirds:
 """
         if static_lines:
             self.header += static_lines
-        self.line_count = len(self.header.split('\n'))-1
+        self.line_count = len(self.header.split("\n")) - 1
 
     def format_tone(self, tone: float) -> tuple:
         """
@@ -48,19 +45,29 @@ class VuBirds:
         :return: Tuple('Tone_Type', TONE)
         """
         if tone > 0.0:
-            return 'Tone', tone
+            return "Tone", tone
         else:
-            return '', 88.5
+            return "", 88.5
 
-    def process(self, sat_list=[SatFM(satname="AO51", downlink_freq=436.150,
-                                      uplink_freq=144.200,
-                                      ctss_code=0,
-                                      activate_code=0),
-                                SatFM(satname="AO52", downlink_freq=437.150,
-                                      uplink_freq=144.400,
-                                      ctss_code=67,
-                                      activate_code=97),
-                                ])-> str:
+    def process(
+        self,
+        sat_list=[
+            SatFM(
+                satname="AO51",
+                downlink_freq=436.150,
+                uplink_freq=144.200,
+                ctss_code=0,
+                activate_code=0,
+            ),
+            SatFM(
+                satname="AO52",
+                downlink_freq=437.150,
+                uplink_freq=144.400,
+                ctss_code=67,
+                activate_code=97,
+            ),
+        ],
+    ) -> str:
         """
         We need to generate data based in the sats list.
         This list is just a guess as to what you may need.
@@ -74,27 +81,30 @@ class VuBirds:
             if s.activate_code > 0.0:
                 # We need to "arm" the satellite
                 # This means we transmit a special CTSS code to energize the satellite
-                for channel in ['Arm']:
+                for channel in ["Arm"]:
                     dlf = VuBirds.simple_doppler(channel, s.downlink_freq)
                     tone, hz = self.format_tone(s.activate_code)
-                    output += VuBirds.line.format(self.line_count,
-                                                  "{}-{}".format(s.satname, channel),  # Name
-                                                  f"{dlf:9.6F}",  # Adjusted Freq
-                                                  tone,
-                                                  hz,
-                                                  hz
-                                                  )
+                    output += VuBirds.line.format(
+                        self.line_count,
+                        "{}-{}".format(s.satname, channel),  # Name
+                        f"{dlf:9.6F}",  # Adjusted Freq
+                        tone,
+                        hz,
+                        hz,
+                    )
                     self.line_count += 1
             # We have 5 Channels  - AOS, Up, Top, Down, LOS
-            for channel in ['A', 'B', 'C', 'D', 'E']:
+            for channel in ["A", "B", "C", "D", "E"]:
                 dlf = VuBirds.simple_doppler(channel, s.downlink_freq)
                 tone, hz = self.format_tone(s.ctss_code)
-                output += VuBirds.line.format(self.line_count,
-                                              "{}-{}".format(s.satname, channel),
-                                              f"{dlf:9.6F}", tone,
-                                              hz,
-                                              hz
-                                              )
+                output += VuBirds.line.format(
+                    self.line_count,
+                    "{}-{}".format(s.satname, channel),
+                    f"{dlf:9.6F}",
+                    tone,
+                    hz,
+                    hz,
+                )
                 self.line_count += 1
         return output
 
@@ -108,12 +118,12 @@ class VuBirds:
         :return: Adjusted Frequency
         """
 
-        if chan.startswith('A'):
+        if chan.startswith("A"):
             freq += 0.010
-        elif chan.startswith('B'):
+        elif chan.startswith("B"):
             freq += 0.005
-        elif chan.startswith('D'):
+        elif chan.startswith("D"):
             freq -= 0.005
-        elif chan.startswith('E'):
+        elif chan.startswith("E"):
             freq -= 0.01
         return freq

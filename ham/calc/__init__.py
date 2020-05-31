@@ -5,3 +5,4 @@ from .locator import Locator
 
 # from .hamstats import WorkedCountries
 from .windforce import WindForce
+from .antenna_seperation import AntSeperation

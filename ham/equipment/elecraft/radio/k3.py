@@ -17,8 +17,8 @@ import logging
 import serial
 from .Io import Io
 
-class K3(Io):
 
+class K3(Io):
     def __init__(self, port="/dev/cu.usbserial-A7004VW8", baud_rate=38400, timeout=1):
         """
         Initialize the Radio. Supply the base parameters.
@@ -36,7 +36,9 @@ class K3(Io):
         self.ser.flushOutput()
         self.modeq()
 
-    def open_serial(self, port="/dev/cu.usbserial-A7004VW8", baud_rate=38400, timeout=1):
+    def open_serial(
+        self, port="/dev/cu.usbserial-A7004VW8", baud_rate=38400, timeout=1
+    ):
         """
         Open the serial Device
         :param port:
@@ -51,26 +53,26 @@ class K3(Io):
     # FA00014060000
     # FA00007030000
     def qsy(self, freq: float) -> str:
-        return self._qsy('a', freq)
+        return self._qsy("a", freq)
 
     #
     # Set the 2ND RX VFO current frequency
     # FB00014060000
     # FB00007030000
     def qsy2(self, freq: float) -> str:
-        return self._qsy('b', freq)
+        return self._qsy("b", freq)
 
     def _qsy(self, band: str, freq: float) -> str:
-        if band not in ['a', 'b']:
+        if band not in ["a", "b"]:
             cmd = ""
-            raise ValueError('Band code not a or b')
+            raise ValueError("Band code not a or b")
         else:
             if freq < 10e6:
                 cmd = "FA0000%d;" % freq  # in 7 digits
             elif freq > 10e6 and freq < 10e8:
                 cmd = "FB000%d;" % freq  # in 8 digits
             else:
-                raise ValueError(f'Freq {freq} out of scope')
+                raise ValueError(f"Freq {freq} out of scope")
             self.write(cmd)
             return str(self.qsyq())
 
@@ -81,8 +83,8 @@ class K3(Io):
         :return:
         """
         band = band.upper()
-        if band not in ['A', 'B']:
-            raise ValueError('Band code not a or b')
+        if band not in ["A", "B"]:
+            raise ValueError("Band code not a or b")
         else:
             self.logger.debug(f"get VFO-{band}")
             self.write(f"F{band};")
@@ -100,10 +102,10 @@ class K3(Io):
     # FA00014060000
     # FA00007030000
     def qsyq(self) -> str:
-        return self._qsyq('A')
+        return self._qsyq("A")
 
     def qsyq2(self) -> str:
-        return self._qsyq('B')
+        return self._qsyq("B")
 
     def fiq(self) -> str:
         """
@@ -331,7 +333,6 @@ class K3(Io):
         self.write(cmd)
         return self.cwspeedq()
 
-
     def ra(self, offon: int) -> str:
         """
         Set ATT to off=0|on=1
@@ -339,11 +340,10 @@ class K3(Io):
         :return: str on, off or Unk
         """
         if 2 > offon >= 0:
-            self.write('RA%1d;'.format(offon))
+            self.write("RA%1d;".format(offon))
             return self.raq()
         else:
             raise ValueError(f"Invalid ra setting {offon}")
-
 
     def raq(self) -> str:
         """
@@ -373,7 +373,7 @@ class K3(Io):
     # FW00001;
     # 0 means "next"
     def filter(self, n) -> None:
-        if n <10:
+        if n < 10:
             cmd = "FW0000%d;" % n
             self.write(cmd)
         else:
