@@ -5,7 +5,7 @@ for p in find_packages():
     print("Instaling ipackage "+str(p))
 setup(
     name='ham',
-    version='1.7.2',
+    version='1.8.0',
     packages=find_packages(),
     include_package_data=True, #Uses Manifest.IN
     url='',
@@ -27,7 +27,7 @@ setup(
         ]},
     #Dev can be triggered by
     #python setup.py sdist
-    #pip install dist/ham-1.7.2.tar.gz[dev]
+    #pip install dist/ham-1.8.0.tar.gz[dev]
     #
 )
 
