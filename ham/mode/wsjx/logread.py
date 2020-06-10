@@ -72,6 +72,18 @@ class WsjXQso:
         )
 
 
+    @property
+    def __adif_interface__(self):
+        return f"<freq:{len(str(self.band))}> {str(self.band)} " + \
+               f"<mode:3> FT8 " + \
+               f"<date:{len(str(self.when))}> {str(self.when)} " + \
+               f"<timeofday:{len(self.timeofday)}> {self.timeofday} " + \
+               "<my_call:5> DU3TW " + \
+               f"<their_call:{len(self.call)}>:  self.their_call " + \
+               f"<grid:{len(self.grid)}:> {self.grid} " + \
+               f"<grid:{len(str(self.lat))}:> {str(self.lat)} " + \
+               f"<grid:{len(str(self.lon))}:> {str(self.lon)} "
+
 class LogRead:
     def __init__(
         self,
@@ -153,6 +165,19 @@ class LogRead:
             ]
         )
 
+    def dump_adif(self) -> str:
+        my_lat, my_lon = Locator.locator_to_latlong(self.my_qra)
+        rv = ""
+        for q in self.qso:
+            rv += q.__adif_interface__
+        return rv
+
     def dump_geo_to_file(self, filename: str = "MySpots.json"):
         with open(filename, "wt") as geoJsonFile:
             json.dump(self.dump_geo(), geoJsonFile)
+
+    def dump_wsjx_to_adif(self, filename: str = "wsjx.adif"):
+        with open(filename, "wt") as AdifFile:
+            AdifFile.write(self.dump_adif()+"\n")
+
+
