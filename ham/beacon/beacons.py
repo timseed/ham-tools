@@ -3,7 +3,7 @@ import logging
 import sys
 import time
 from enum import Enum
-
+from ham.beacon.set_k3_freq import SetK3Freq
 __author__ = "timseed"
 
 
@@ -411,6 +411,12 @@ if __name__ == "__main__":
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(logging.INFO)
     handler.setFormatter(formatter)
+    # Try and set the K3 for the Bands
+    try:
+        sk3 = SetK3Freq(mode='beacon')
+    except Exception as err:
+        logger.error(f"Problem {err} setting K3 Beacon frequencies")
+        pass
     dx = Beacons()
     dx.SetBand(int(sys.argv[3]))
     dx.beacon_start(timeout=5000)
