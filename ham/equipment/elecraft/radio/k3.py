@@ -63,14 +63,15 @@ class K3(Io):
         return self._qsy("b", freq)
 
     def _qsy(self, band: str, freq: float) -> str:
-        if band not in ["a", "b"]:
+        band = band.upper()
+        if band not in ["A", "B"]:
             cmd = ""
             raise ValueError("Band code not a or b")
         else:
             if freq < 10e6:
-                cmd = "FA0000%d;" % freq  # in 7 digits
+                cmd = "F%s0000%d;" % (band,freq)  # in 7 digits
             elif freq > 10e6 and freq < 10e8:
-                cmd = "FB000%d;" % freq  # in 8 digits
+                cmd = "F%s000%d;" % (band,freq)  # in 8 digits
             else:
                 raise ValueError(f"Freq {freq} out of scope")
             self.write(cmd)
@@ -88,11 +89,12 @@ class K3(Io):
         else:
             self.logger.debug(f"get VFO-{band}")
             self.write(f"F{band};")
-            result = self.read(20)
-            if len(result) > 15:
+            result = self.read(25)
+            if len(result) >= 15:
                 self.logger.debug("result is " + result)
-                hz = result.split(";")[2].replace(f"F{band}", "")[0:8]
+                hz = result.split(";")[1].replace(f"F{band}", "")[0:8]
                 # FA;FA00024893007;
+                self.logger.debug(f"Hz read is <{hz}>")
                 return hz
             else:
                 return "0"
@@ -171,7 +173,7 @@ class K3(Io):
             mode_num = 6
         elif str_mode_setting == "rttyr":
             mode_num = 9
-        cmd = "MD%d;" % mode_num
+        cmd = "MD%d" % mode_num
         self.write(cmd)
         return self.modeq()
 
@@ -182,7 +184,7 @@ class K3(Io):
         Get the Mode that the radio is operating on
         :return: string to represent to mode. i.e. cw, ssb.
         """
-        self.write("K22;MD;")
+        self.write("K22;MD")
         result = self.read(4)
         if len(result) != 4:
             return "???: " + result
@@ -471,3 +473,18 @@ tagged with ‘*’ as the first character in its label enables channel-hop scan
     def use_channel(self, id: int) -> int:
         self.write("MC{:03d};".format(id))
         return True
+
+    def read_data(self,no_of_chars=20):
+        return self.read(no_of_chars)
+
+
+    def set_band(self, band_number:int) -> str:
+        self.write("BN{:02d};".format(band_number))
+        return self.get_band()
+
+    def get_band(self) ->str:
+        self.write("BN;")
+        result = self.read(4)
+        if len(result) != 4:
+            return "Unk"
+        return result[2:]

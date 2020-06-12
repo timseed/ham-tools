@@ -45,9 +45,11 @@ class Io:
 
         Please note the data need to be binary encoded before it can be sent.
 
-        :param str_command: Command string(s) i.e. K22;MD;
+        :param str_command: Command string(s) i.e. K22;MD
         :return: None
         """
+        str_command=str_command.rstrip(';')
+
         for a in str_command.split(";"):
             self.logger.debug("Sending Data to Serial Port")
             self.ser.write((a + ";").encode("utf-8"))

@@ -9,7 +9,7 @@ VENV_ACTIVATE=. ~/$(VENV_NAME)/bin/activate
 PYTHON=~/${VENV_NAME}/bin/python3
 PIP = pip3
 PYCOV = $(PYTHON) -m coverage
-Package = ham-1.9.0.tar.gz
+Package = ham-1.8.2.tar.gz
 
 objects := $(patsubst %.py,$(Package).tar.gz,$(wildcard *.py))
 
