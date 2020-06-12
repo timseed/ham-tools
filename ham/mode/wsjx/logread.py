@@ -74,15 +74,16 @@ class WsjXQso:
 
     @property
     def __adif_interface__(self):
-        return f"<freq:{len(str(self.band))}> {str(self.band)} " + \
-               f"<mode:3> FT8 " + \
-               f"<date:{len(str(self.when))}> {str(self.when)} " + \
-               f"<timeofday:{len(self.timeofday)}> {self.timeofday} " + \
-               "<my_call:5> DU3TW " + \
-               f"<their_call:{len(self.call)}>:  self.their_call " + \
-               f"<grid:{len(self.grid)}:> {self.grid} " + \
-               f"<grid:{len(str(self.lat))}:> {str(self.lat)} " + \
-               f"<grid:{len(str(self.lon))}:> {str(self.lon)} "
+        return f"<freq:{len(str(self.band))}>{str(self.band)} " + \
+               f"<mode:3>FT8 " + \
+               f"<date:{len(str(self.when))}>{str(self.when)} " + \
+               f"<timeofday:{len(self.timeofday)}>{self.timeofday} " + \
+               "<my_call:5>DU3TW " + \
+               f"<their_call:{len(self.call)}>{self.call} " + \
+               f"<grid:{len(self.grid)}>{self.grid} " + \
+               f"<grid:{len(str(self.lat))}>{str(self.lat)} " + \
+               f"<grid:{len(str(self.lon))}>{str(self.lon)} " +\
+                "<EOR>\n"
 
 class LogRead:
     def __init__(
