@@ -7,6 +7,9 @@ pre-programmed.
 
 """
 import logging
+import sys
+import daiquiri
+
 from time import sleep
 
 from ham.equipment.elecraft.radio import k3
@@ -30,8 +33,10 @@ class SetK3Freq:
             28200000]
         self.band = [5, 6, 7, 8, 9]
         if mode == 'beacon':
+            self.logger.info("Setting up Beacon frequencies")
             self.set_freq(self.beacon_freq)
         else:
+            self.logger.info("Setting up Cw frequencies")
             self.set_freq(self.cw_freq)
 
     def set_freq(self, list_of_freq):
@@ -55,8 +60,6 @@ class SetK3Freq:
 
 
 if __name__ == "__main__":
-    import sys
-    import daiquiri
 
     format_str = '%(asctime)s,%(msecs)d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s'
     date_format = "%Y-%m-%d %H:%M:%S"

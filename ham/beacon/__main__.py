@@ -1,6 +1,7 @@
 import logging
 import sys
-from ham.beacon import Beacons
+import daiquiri
+from ham.beacon import Beacons, SetK3Freq
 
 if __name__ == "__main__":
     logger = logging.getLogger(__name__)
@@ -10,7 +11,13 @@ if __name__ == "__main__":
     handler = logging.StreamHandler(sys.stdout)
     handler.setLevel(logging.INFO)
     handler.setFormatter(formatter)
-
+    # Try and set the K3 for the Bands
+    try:
+        sk3 = SetK3Freq(mode='beacon')
+        logger.info("K3 Setup")
+    except Exception as err:
+        logger.error(f"Problem {err} setting K3 Beacon frequencies")
+        pass
     # add the handlers to the logger
     dx = Beacons(screenoutput=True)
     # dx.SetBand(int(sys.argv[1]))
