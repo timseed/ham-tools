@@ -16,5 +16,3 @@ if __name__ == "__main__":
     # dx.SetBand(int(sys.argv[1]))
     dx.beacon_start(timeout=5000)
     dx.dump_band(4)
-    junk = 1
-    junk = 1
