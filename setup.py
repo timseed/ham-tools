@@ -5,11 +5,7 @@ for p in find_packages():
     print("Instaling ipackage "+str(p))
 setup(
     name='ham',
-<<<<<<< HEAD
-    version='1.9.0',
-=======
     version='1.8.2',
->>>>>>> beacon_set_k3_freq
     packages=find_packages(),
     include_package_data=True, #Uses Manifest.IN
     url='',
