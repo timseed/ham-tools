@@ -342,7 +342,7 @@ class K3(Io):
         :return: str on, off or Unk
         """
         if 2 > offon >= 0:
-            self.write("RA%1d;".format(offon))
+            self.write("RA%:1d;".format(offon))
             return self.raq()
         else:
             raise ValueError(f"Invalid ra setting {offon}")
