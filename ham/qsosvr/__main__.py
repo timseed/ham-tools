@@ -2,15 +2,10 @@ import socket, select, sys
 import logging
 from datetime import datetime
 from ham.qsosvr import dxspider
+from ham.log import set_logging
+# todo needs argparse
 
-logger = logging.getLogger(__name__)
-formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-handler = logging.StreamHandler(sys.stdout)
-handler.setLevel(logging.INFO)
-handler.setFormatter(formatter)
-# add the handlers to the logger
-logger.addHandler(handler)
-
+logger  = set_logging()
 if len(sys.argv) < 3:
     print("Usage : python telnet.py hostname port callsign")
     print("Defaulting to gb7mbc.spoo.org 8000 a45wg")

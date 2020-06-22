@@ -1,5 +1,5 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
-
+from ham.log import set_logging
 
 class WebServer(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -16,6 +16,6 @@ class WebServer(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(bytes(file_to_open, "utf-8"))
 
-
+logger  = set_logging()
 httpd = HTTPServer(("localhost", 8000), WebServer)
 httpd.serve_forever()

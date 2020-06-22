@@ -1,4 +1,5 @@
 from ham.cabrillo.cab2csv import Cab2Csv
+from ham.log import set_logging
 import argparse
 import os
 import logging
@@ -54,9 +55,7 @@ if __name__ == "__main__":
         "-vvv", "--DEB", dest="logging_level", action="store_const", const=logging.DEBUG
     )
     args = parser.parse_args()
-    daiquiri.setup(level=args.logging_level)
-    LOGGER = daiquiri.getLogger(__name__)
-
+    LOGGER  = set_logging(logging.INFO)
     cab = Cab2Csv()
     lines = cab.read_cab(args.file)
     qsos = cab.produce_qso(lines)
