@@ -28,6 +28,7 @@ class Adif2Csv(object):
         self.header = ""
         self.all_lines_same = all_lines_same
         self.linestarts="<call" if not IsWriteLogAdif else "<QSO_DATE"
+        self.IsWriteLogAdif = IsWriteLogAdif
 
 
     def process(self, filename):
@@ -40,11 +41,15 @@ class Adif2Csv(object):
         :param filename:
          :return:
         """
-        with open(filename, "rt") as f:
-            for line in f:
-                if line.startswith(self.linestarts):
-                    self.lines.append(line)
-            f.close()
+        if not self.IsWriteLogAdif:
+            with open(filename, "rt") as f:
+                for line in f:
+                    if line.startswith(self.linestarts):
+                        self.lines.append(line)
+                f.close()
+        else:
+            data = open(filename, "rt").read()
+            self.lines =[a for a in re.sub(r'[ ]+', '', re.sub(r'[ ]+\n', '', data)).split('\n') if a.startswith(self.linestarts)]
         self.make_dict()
 
     def make_dict(self):
