@@ -42,7 +42,7 @@ class Adif2Csv(object):
         """
         with open(filename, "rt") as f:
             for line in f:
-                if line.startswith(self.linestart):
+                if line.startswith(self.linestarts):
                     self.lines.append(line)
             f.close()
         self.make_dict()
