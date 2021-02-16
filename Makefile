@@ -4,7 +4,7 @@ PYSRC = ham
 PYTEST = ham/tests
 
 
-VENV_NAME?=pe38
+VENV_NAME?=pe39
 VENV_ACTIVATE=. ~/$(VENV_NAME)/bin/activate
 PYTHON=~/${VENV_NAME}/bin/python3
 PIP = pip3
